@@ -1,12 +1,18 @@
 return {
-  apperance = {},
+  apperance = {
+
+  },
   components = {
     default = {
       install_folder = "/Users/Shared/DefaultInstall",
       name = "Default",
       payload = "payloads/default",
       visible = false,
-      selected = true
+      selected = true,
+      scripts = {
+        postinstall = "postinstall",
+        preinstall = "preinstall"
+      },
     },
     other = {
       install_folder = "/Users/Shared/OtherInstallData",
@@ -19,9 +25,5 @@ return {
   org_id = "com.company.product",
   pkg_name = "MyCoolSoftware",
   project_name = "My Cool Software",
-  scripts = {
-    postinstall = "script/postinstaller",
-    preinstall = "scripts/preinstaller"
-  },
   version = "0.0.1"
 }

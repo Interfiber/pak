@@ -9,15 +9,16 @@ module.createNew = function ()
         version = "0.0.1",
         pkg_name = "MyCoolSoftware",
         org_id = "com.company.product",
-        apperance = {},
-        scripts = {
-            preinstall = "scripts/preinstaller",
-            postinstall = "script/postinstaller"
+        apperance = {
+            comment = "Apperance config goes here. You can delete this comment line if you want"
         },
         components = {
             default = {
                 name = "Default",
                 visible = true,
+                scripts = {
+                    comment = "script data for preinstall, and postinstall scripts goes here. You can delete this comment line if you want"
+                },
                 start_selected = true,
                 payload = "payloads/default",
                 install_folder = "/Users/Shared/DefaultInstall",

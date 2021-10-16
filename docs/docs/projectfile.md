@@ -120,3 +120,14 @@ Dictates if the current component is selected by default in the installer custom
 ```lua
 components.other.selected = true
 ```
+
+## component.scripts [Table]
+A list of scripts for the current package component.
+```lua
+components.other.scripts = {
+    -- Preinstall scripts run before the install starts for this package component
+    preinstall = "preinstaller",
+    -- Postinstall scripts run after the install completes for this package component
+    postinstall = "postinstaller"
+}
+```

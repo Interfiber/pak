@@ -7,8 +7,14 @@ module.buildProject = function ()
     utils.prepBuild()
     print("# Building package components...")
     local conf = require "pak_conf"
+    print("# Checking conf...")
+    utils.checkConf(conf)
     local components = conf.components
     for i, component in pairs(components) do
+        if component.name == nil then
+            print("# Exception during build!! The component name must be specified!")
+            os.exit(1)
+        end
         print("# Build: "..component.name)
         print("# Package Payload: "..component.payload)
         utils.requireBuildFile(component.payload)
@@ -19,7 +25,19 @@ module.buildProject = function ()
         end
         lfs.mkdir(".build_cache/current/"..component.name.."/")
         os.execute("cp -rf "..component.payload.."/* "..".build_cache/current/"..component.name.."/")
-        os.execute("pkgbuild --identifier "..conf.org_id.."."..component.name.." --version "..conf.version.." --root .build_cache/current/"..component.name.."/ --install-location "..component.install_folder.." .build_cache/current/pkgs/"..conf.org_id.."."..component.name..".pkg")
+        -- check for scripts
+        lfs.mkdir(".build_cache/current/scripts/"..component.name)
+        if component.scripts ~= nil then
+            if component.scripts.postinstall ~= nil then
+                os.execute("cp "..component.scripts.postinstall.." .build_cache/current/scripts/"..component.name.."/postinstall")
+                os.execute("chmod +x".." .build_cache/current/scripts/"..component.name.."/postinstall")
+            end
+            if component.scripts.preinstall ~= nil then
+                os.execute("cp "..component.scripts.preinstall.." .build_cache/current/scripts/"..component.name.."/preinstall")
+                os.execute("chmod +x".." .build_cache/current/scripts/"..component.name.."/preinstall")
+            end
+        end
+        os.execute("pkgbuild --scripts .build_cache/current/scripts/"..component.name.." --identifier "..conf.org_id.."."..component.name.." --version "..conf.version.." --root .build_cache/current/"..component.name.."/ --quiet --install-location "..component.install_folder.." .build_cache/current/pkgs/"..conf.org_id.."."..component.name..".pkg")
         print("# Built package component")
     end
     print("# Generate: Distribution")
@@ -60,7 +78,19 @@ module.buildProject = function ()
     dist = dist..'\n</choices-outline>'
     -- Write the pkg-ref for each choice
     for _, pkg in pairs(components) do
-        dist = dist..'\n <choice id="'..ticker..'_install" title="'..pkg.name..'" description="" visible="'..tostring(pkg.visible)..'" start_selected="'..tostring(pkg.selected)..'">\n<pkg-ref id="'..conf.org_id.."."..pkg.name..'"/>\n</choice>'
+        local visible = true
+        local selected = true
+        if pkg.selected == nil then
+            utils.warn("Failed to find value selected, using default value.")
+        else
+            selected = pkg.selected
+        end
+        if pkg.visible == nil then
+            utils.warn("Failed to find value visible, using default value.")
+        else
+            visible = pkg.visible
+        end
+        dist = dist..'\n <choice id="'..ticker..'_install" title="'..pkg.name..'" description="" visible="'..tostring(visible)..'" start_selected="'..tostring(selected)..'">\n<pkg-ref id="'..conf.org_id.."."..pkg.name..'"/>\n</choice>'
         ticker = ticker + 1
     end
     -- Write global pkg-ref
@@ -71,9 +101,11 @@ module.buildProject = function ()
     local distfile = io.open(".build_cache/current/Distribution", "a")
     distfile:write(dist)
     distfile:close()
-    os.execute('productbuild --distribution .build_cache/current/Distribution --resources .build_cache/current/resource --package-path .build_cache/current/pkgs build/'..conf.pkg_name..'.pkg')
+    os.execute('productbuild --quiet --distribution .build_cache/current/Distribution --resources .build_cache/current/resource --package-path .build_cache/current/pkgs build/'..conf.pkg_name..'.pkg')
     print("# Cleaning up...")
-    utils.cleanup(false)
+    if os.getenv("PAK_DISABLE_CLEANUP") == nil then
+        utils.cleanup(false) 
+    end
     print("# Built files into folder: build")
 end
 
