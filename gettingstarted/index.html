@@ -14,7 +14,7 @@
     
     
       
-        <title>Creating a New Project - Pak Docs</title>
+        <title>Getting Started - Pak Docs</title>
       
     
     
@@ -61,7 +61,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#creating-a-new-project" class="md-skip">
+        <a href="#getting-started" class="md-skip">
           Skip to content
         </a>
       
@@ -93,7 +93,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Creating a New Project
+              Getting Started
             
           </span>
         </div>
@@ -195,8 +195,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../install/" class="md-nav__link">
-        Installing Pak
+      <a href="../commands/" class="md-nav__link">
+        Commands
       </a>
     </li>
   
@@ -220,12 +220,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Creating a New Project
+          Getting Started
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Creating a New Project
+        Getting Started
       </a>
       
         
@@ -243,15 +243,29 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#create-a-new-project" class="md-nav__link">
-    Create a new project
+  <a href="#installation" class="md-nav__link">
+    Installation
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#using-pak_conflua" class="md-nav__link">
-    Using pak_conf.lua
+  <a href="#creating-a-new-project" class="md-nav__link">
+    Creating a new project
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#project-file-overview" class="md-nav__link">
+    Project file overview
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-the-package" class="md-nav__link">
+    Building the package
   </a>
   
 </li>
@@ -260,6 +274,21 @@
   
 </nav>
       
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../install/" class="md-nav__link">
+        Installing Pak
+      </a>
     </li>
   
 
@@ -305,15 +334,29 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#create-a-new-project" class="md-nav__link">
-    Create a new project
+  <a href="#installation" class="md-nav__link">
+    Installation
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#using-pak_conflua" class="md-nav__link">
-    Using pak_conf.lua
+  <a href="#creating-a-new-project" class="md-nav__link">
+    Creating a new project
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#project-file-overview" class="md-nav__link">
+    Project file overview
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-the-package" class="md-nav__link">
+    Building the package
   </a>
   
 </li>
@@ -331,19 +374,22 @@
               
                 
                 
-                <h1 id="creating-a-new-project">Creating a New Project</h1>
-<h2 id="create-a-new-project">Create a new project</h2>
-<p>To create a new project create a new empty folder, then change you're working directory to be that folder. Then you can 
-generate a new project using the following command
+                <h1 id="getting-started">Getting Started</h1>
+<p>How to get started with pak</p>
+<h2 id="installation">Installation</h2>
+<p>Theres a <a href="/install">Installation Guide</a> for this.</p>
+<h2 id="creating-a-new-project">Creating a new project</h2>
+<p>First create a new empty folder, and run the following command inside it
 <div class="highlight"><pre><span></span><code>pak new
-</code></pre></div></p>
-<h2 id="using-pak_conflua">Using <code>pak_conf.lua</code></h2>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This is not a full overview of all of the keys, and values in pak_conf.lua see the project build file section for more info.</p>
-</div>
-<p>The new project generator will create a file called <code>pak_conf.lua</code> this is where we will be configuring our project
-First lets change our project name by editing the value of <code>project_name</code> to be whatever we want, I'll use <code>My Epic Project</code>.</p>
+</code></pre></div>
+This will bootstrap a new project for us. Now we can move onto making our package</p>
+<h2 id="project-file-overview">Project file overview</h2>
+<p>Lets start with adding a basic installer component to our project file, in the components table there should be a precreated one for us. Lets look at what this does. First we give the component a <code>name</code>, this tells us what component it is. Next we set the <code>install_folder</code>, this tells us where we should install the software. Then we give it a <code>payload</code> which is a folder which the contents of will be installed into the install folder. Then we tell the installer if this component is <code>visible</code> in the installer customize window. Then finally we tell the installer if it should start <code>selected</code> in the customize window.</p>
+<h2 id="building-the-package">Building the package</h2>
+<p>To build the package we can run the following command in our project folder:
+<div class="highlight"><pre><span></span><code>pak build
+</code></pre></div>
+This will create a package installer in the folder <code>build</code></p>
                 
               
               
@@ -363,7 +409,7 @@ First lets change our project name by editing the value of <code>project_name</c
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
         
-        <a href="../install/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Installing Pak" rel="prev">
+        <a href="../commands/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Commands" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -372,20 +418,20 @@ First lets change our project name by editing the value of <code>project_name</c
               <span class="md-footer__direction">
                 Previous
               </span>
-              Installing Pak
+              Commands
             </div>
           </div>
         </a>
       
       
         
-        <a href="../projectfile/" class="md-footer__link md-footer__link--next" aria-label="Next: Project File Docs" rel="next">
+        <a href="../install/" class="md-footer__link md-footer__link--next" aria-label="Next: Installing Pak" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Project File Docs
+              Installing Pak
             </div>
           </div>
           <div class="md-footer__button md-icon">
