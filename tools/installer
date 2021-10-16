@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+echo "# Checking for lua..."
+if [[ "$(which lua)" == "" ]]; then
+    echo "# Lua not found! Please install it before running pak"
+    exit 1
+fi
+echo "# Checking for lua rocks..."
+if [[ "$(which luarocks)" == "" ]]; then
+    echo "# Luarocks not found! Please install it before running pak"
+    exit 1
+fi
+echo "# Creating folders..."
+mkdir $HOME/.pak
+echo "# Downloading files..."
+git clone https://github.com/Interfiber/pak $HOME/.pak/cache
+echo "# Installing..."
+mv $HOME/.pak/cache/* $HOME/.pak
+rm -rf $HOME/.pak/cache
+echo "# Installing luarocks..."
+sh $HOME/.pak/rocks.sh
+echo "# Adding data to shell profile..."
+touch $HOME/.pak/source_file
+echo "export PAK_DIR=$HOME/.pak && export PATH=$PAK_DIR:$PATH" >> $HOME/.pak/source_file
+echo "# Installed. Now simply source ~/.pak/source_file in you're shell profile"
