@@ -72,7 +72,7 @@ module.buildProject = function ()
     for _, component in pairs(components) do
         dist = dist..'\n<pkg-ref id="'..conf.org_id.."."..component.name..'" version="1.0" auth="Root">'..conf.org_id.."."..component.name..'.pkg</pkg-ref>'
     end
-    dist = dist..'\n</installer-gui-script>'
+    dist = dist..'\n</in    staller-gui-script>'
     local distfile = io.open(".build_cache/current/Distribution", "a")
     distfile:write(dist)
     distfile:close()
