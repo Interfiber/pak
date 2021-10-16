@@ -1,6 +1,8 @@
 site_name: Pak Docs
 theme:
   name: material
+  palette:
+    scheme: slate
 markdown_extensions:
   - admonition
   - pymdownx.details
