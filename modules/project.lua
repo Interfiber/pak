@@ -9,13 +9,7 @@ module.createNew = function ()
         version = "0.0.1",
         pkg_name = "MyCoolSoftware",
         org_id = "com.company.product",
-        apperance = {
-            welcome_html = "welcome.html",
-            finished_html = "complete.html",
-            readme = "README.txt",
-            license_file = "LICENSE.txt",
-            background_png = "background.png"
-        },
+        apperance = {},
         scripts = {
             preinstall = "scripts/preinstaller",
             postinstall = "script/postinstaller"

@@ -1,11 +1,5 @@
 return {
-  apperance = {
-    background_png = "background.png",
-    finished_html = "done.html",
-    license_file = "../LICENSE",
-    readme = "README.txt",
-    welcome_html = "welcome.html"
-  },
+  apperance = {},
   components = {
     default = {
       install_folder = "/Users/Shared/DefaultInstall",

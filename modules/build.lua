@@ -1,31 +1,22 @@
 local module = {}
 local lfs = require "lfs"
+local utils = require "modules.utils"
 
 module.buildProject = function ()
-    print("# Building project from config file")
-    if lfs.attributes("pak_conf.lua") == nil then
-        print("# Failed to build project: Build config does not exist")
-        os.exit(1)
-    end
-    if lfs.attributes("build") == nil then
-        print("# Failed to build project: Build folder does not exist")
-        os.exit(1)
-    end
-    if lfs.attributes(".build_cache") == nil then
-        print("# Failed to build project: .build_cache folder does not exist")
-        os.exit(1)
-    end
-    local conf = require "pak_conf"
     print("# Prepping for build...")
-    lfs.mkdir(".build_cache/current")
-    lfs.mkdir(".build_cache/current/scripts")
-    lfs.mkdir(".build_cache/current/pkgs")
-    lfs.mkdir(".build_cache/current/result")
-    lfs.mkdir(".build_cache/current/resource")
+    utils.prepBuild()
     print("# Building package components...")
+    local conf = require "pak_conf"
     local components = conf.components
     for i, component in pairs(components) do
         print("# Build: "..component.name)
+        print("# Package Payload: "..component.payload)
+        utils.requireBuildFile(component.payload)
+        if utils.isFolderEmpty(component.payload) then
+            print("# Failed to build component: Payload folder is empty!")
+            utils.cleanup()
+            os.exit(1)
+        end
         lfs.mkdir(".build_cache/current/"..component.name.."/")
         os.execute("cp -rf "..component.payload.."/* "..".build_cache/current/"..component.name.."/")
         os.execute("pkgbuild --identifier "..conf.org_id.."."..component.name.." --version "..conf.version.." --root .build_cache/current/"..component.name.."/ --install-location "..component.install_folder.." .build_cache/current/pkgs/"..conf.org_id.."."..component.name..".pkg")
@@ -37,18 +28,22 @@ module.buildProject = function ()
     -- Handle apperance stuff here
     dist = dist..'\n<title>'..conf.project_name..'</title>'
     if conf.apperance.welcome_html ~= nil then
+        utils.requireBuildFile(conf.apperance.welcome_html)
         os.execute("cp "..conf.apperance.welcome_html.." .build_cache/current/resource/welcome.html")
         dist = dist..'\n<welcome file="welcome.html" mime-type="text/html" />'
     end
     if conf.apperance.readme ~= nil then
+        utils.requireBuildFile(conf.apperance.readme)
         os.execute("cp "..conf.apperance.readme.." .build_cache/current/resource/README.txt")
         dist = dist..'\n<readme file="README.txt" mime-type="text/plain" />'
     end
     if conf.apperance.license_file ~= nil then
+        utils.requireBuildFile(conf.apperance.license_file)
         os.execute("cp "..conf.apperance.license_file.." .build_cache/current/resource/LICENSE.txt")
         dist = dist..'\n<license file="LICENSE.txt" />'
     end
     if conf.apperance.finished_html ~= nil then
+        utils.requireBuildFile(conf.apperance.finished_html)
         os.execute("cp "..conf.apperance.finished_html.." .build_cache/current/resource/install_done.html")
         dist = dist..'\n<conclusion file="install_done.html" mime-type="text/html" />'
     end
@@ -72,13 +67,13 @@ module.buildProject = function ()
     for _, component in pairs(components) do
         dist = dist..'\n<pkg-ref id="'..conf.org_id.."."..component.name..'" version="1.0" auth="Root">'..conf.org_id.."."..component.name..'.pkg</pkg-ref>'
     end
-    dist = dist..'\n</in    staller-gui-script>'
+    dist = dist..'\n</installer-gui-script>'
     local distfile = io.open(".build_cache/current/Distribution", "a")
     distfile:write(dist)
     distfile:close()
     os.execute('productbuild --distribution .build_cache/current/Distribution --resources .build_cache/current/resource --package-path .build_cache/current/pkgs build/'..conf.pkg_name..'.pkg')
     print("# Cleaning up...")
-    os.execute("rm -rvf .build_cache/current")
+    utils.cleanup(false)
     print("# Built files into folder: build")
 end
 
