@@ -40,6 +40,18 @@ module.buildProject = function ()
         os.execute("cp "..conf.apperance.welcome_html.." .build_cache/current/resource/welcome.html")
         dist = dist..'\n<welcome file="welcome.html" mime-type="text/html" />'
     end
+    if conf.apperance.readme ~= nil then
+        os.execute("cp "..conf.apperance.readme.." .build_cache/current/resource/README.txt")
+        dist = dist..'\n<readme file="README.txt" mime-type="text/plain" />'
+    end
+    if conf.apperance.license_file ~= nil then
+        os.execute("cp "..conf.apperance.license_file.." .build_cache/current/resource/LICENSE.txt")
+        dist = dist..'\n<license file="LICENSE.txt" />'
+    end
+    if conf.apperance.finished_html ~= nil then
+        os.execute("cp "..conf.apperance.finished_html.." .build_cache/current/resource/install_done.html")
+        dist = dist..'\n<conclusion file="install_done.html" mime-type="text/html" />'
+    end
     -- Generate the choices here
     local pkgFiles = 0
     local ticker = 0
@@ -53,7 +65,7 @@ module.buildProject = function ()
     dist = dist..'\n</choices-outline>'
     -- Write the pkg-ref for each choice
     for _, pkg in pairs(components) do
-        dist = dist..'\n <choice id="'..ticker..'_install" title="'..pkg.name..'" description="">\n<pkg-ref id="'..conf.org_id.."."..pkg.name..'"/>\n</choice>'
+        dist = dist..'\n <choice id="'..ticker..'_install" title="'..pkg.name..'" description="" visible="'..tostring(pkg.visible)..'" start_selected="'..tostring(pkg.selected)..'">\n<pkg-ref id="'..conf.org_id.."."..pkg.name..'"/>\n</choice>'
         ticker = ticker + 1
     end
     -- Write global pkg-ref
@@ -64,15 +76,9 @@ module.buildProject = function ()
     local distfile = io.open(".build_cache/current/Distribution", "a")
     distfile:write(dist)
     distfile:close()
-    print("# Prepping for product build...")
-    -- lfs.mkdir(".build_cache/current/result/Product")
-    -- print("# Copying  build files...")
-    -- os.execute("cp .build_cache/current/pkgs/*.pkg .build_cache/current/result/Product")
-    -- os.execute("cp .build_cache/current/Distribution .build_cache/current/result/Product/Distribution")
-    -- lfs.mkdir(".build_cache/current/result/Product/Resources")
-    -- os.execute("cp -rf .build_cache/current/resource/* .build_cache/current/result/Product/Resources")
-    -- print("# Build: Flatten")
-    -- os.execute("pkgutil --flatten .build_cache/current/result/Product build/Product.pkg")
+    os.execute('productbuild --distribution .build_cache/current/Distribution --resources .build_cache/current/resource --package-path .build_cache/current/pkgs build/'..conf.pkg_name..'.pkg')
+    print("# Cleaning up...")
+    os.execute("rm -rvf .build_cache/current")
     print("# Built files into folder: build")
 end
 

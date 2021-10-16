@@ -1,0 +1,7 @@
+if [ -z "$PAK_DIR" ]; then
+  echo "Error: PAK_DIR is not set! Please set this varible and continue"
+  exit 1
+fi
+export ORIGINAL=$(lua -e "print(package.path)")
+export LUA_PATH="$ORIGINAL;$PAK_DIR/?.lua"
+lua $PAK_DIR/pak.lua $@

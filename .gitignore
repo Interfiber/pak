@@ -1,5 +1,2 @@
-.build_cache
-build
-pak_conf.lua
-payloads
-epic.html
+example/.build_cache
+example/build
