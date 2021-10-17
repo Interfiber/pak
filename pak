@@ -3,7 +3,7 @@ if [ -z "$PAK_DIR" ]; then
   exit 1
 fi
 export LUA=$(which lua)
-if [ -f "/Library/Application\ Support/pak/has_pak_lua" ]; then
+if [ -e /Library/Application\ Support/pak/has_pak_lua ]; then
   export LUA=/Users/Shared/pak_lua/bin/lua
 fi
 export ORIGINAL=$($LUA -e "print(package.path)")
