@@ -1,17 +1,11 @@
 # Installing Pak
 
-## Dependencies
-
-1. MacOS cli tools installed ```xcode-select --install```
-2. Lua version ```5.4.3```
-3. Luarocks version ```3.7.0```
-
-## Installing pak
-After you have installed all of the dependencies run the following command in you're terminal
+## 🍻 Homebrew 
+To install pak via homebrew you can run the following command
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Interfiber/pak/main/tools/installer)"
+brew install Interfiber/homebrew-tap/pak
 ```
-After the install completes add the following line to you're shell profile if you have not already
-```bash
-source $HOME/.pak/source_file
-```
+
+## 📦 Manually
+To manually install pak goto the [pak homepage](https://interfiber.dev/pak) and click on the download button.
+Once downloaded open the installer and go through it. Note that if you don't have lua installed make sure to select the ```LuaUtils``` package in the installer customize page. If you're not sure if you do check it anyways.
