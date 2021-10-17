@@ -1,5 +1,4 @@
 local serpent = require "modules.serpent"
-local lfs = require "lfs"
 local module = {}
 
 module.createNew = function ()
