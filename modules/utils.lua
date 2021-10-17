@@ -9,11 +9,11 @@ local function fileExists(name)
         return false
     end 
 end
-local function mkdir(file)
+module.mkdir = function (file)
     os.execute("mkdir "..file)
 end
 module.requireBuildFile = function (file)
-    if fileExists(file) == nil then
+    if fileExists(file) == false then
         print("# Exception during build!! The build requires the following file to exist: "..file)
         module.cleanup()
         os.exit(1)
@@ -43,10 +43,10 @@ module.prepBuild = function ()
     module.requireBuildFile("pak_conf.lua")
     module.requireBuildFile("build")
     module.requireBuildFile(".build_cache")
-    mkdir(".build_cache/current")
-    mkdir(".build_cache/current/scripts")
-    mkdir(".build_cache/current/pkgs")
-    mkdir(".build_cache/current/resource")
+    module.mkdir(".build_cache/current")
+    module.mkdir(".build_cache/current/scripts")
+    module.mkdir(".build_cache/current/pkgs")
+    module.mkdir(".build_cache/current/resource")
 end
 module.warn = function (message)
     print("# Pak WARN  "..message)

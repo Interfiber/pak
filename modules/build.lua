@@ -22,10 +22,10 @@ module.buildProject = function ()
             utils.cleanup()
             os.exit(1)
         end
-        lfs.mkdir(".build_cache/current/"..component.name.."/")
+        utils.mkdir(".build_cache/current/"..component.name.."/")
         os.execute("cp -rf "..component.payload.."/* "..".build_cache/current/"..component.name.."/")
         -- check for scripts
-        lfs.mkdir(".build_cache/current/scripts/"..component.name)
+        utils.mkdir(".build_cache/current/scripts/"..component.name)
         if component.scripts ~= nil then
             if component.scripts.postinstall ~= nil then
                 os.execute("cp "..component.scripts.postinstall.." .build_cache/current/scripts/"..component.name.."/postinstall")

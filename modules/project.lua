@@ -1,4 +1,5 @@
 local serpent = require "modules.serpent"
+local utils = require "modules.utils"
 local module = {}
 
 module.createNew = function ()
@@ -36,7 +37,7 @@ module.createNew = function ()
         "payload/default"
     }
     for i, folder in pairs(folders) do
-        lfs.mkdir(folder)
+        utils.mkdir(folder)
         print("# Created folder: "..folder)
     end
     print("# Created new project.")
