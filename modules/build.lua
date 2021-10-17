@@ -1,5 +1,4 @@
 local module = {}
-local lfs = require "lfs"
 local utils = require "modules.utils"
 
 module.buildProject = function ()
