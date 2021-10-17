@@ -1,8 +1,19 @@
 local module = {}
-local lfs = require "lfs"
 
+
+local function fileExists(name)
+    local ok, exit, signal = os.execute("if [ -e '"..name.."' ]; then\n exit 0\n else\n exit 1; fi");
+    if signal == 0 then
+        return true
+    else
+        return false
+    end 
+end
+local function mkdir(file)
+    os.execute("mkdir "..file)
+end
 module.requireBuildFile = function (file)
-    if lfs.attributes(file) == nil then
+    if fileExists(file) == nil then
         print("# Exception during build!! The build requires the following file to exist: "..file)
         module.cleanup()
         os.exit(1)
@@ -11,10 +22,9 @@ end
 module.isFolderEmpty = function (folder)
     module.requireBuildFile(folder)
     local files = 0
-    for file in lfs.dir(folder) do
-        if file ~= "." and file ~= ".." then
-            files = files + 1
-        end
+    local output = io.popen("ls -al")
+    for file in output:lines() do
+        files = files + 1
     end
     if files == 0 then
         return true
@@ -33,10 +43,10 @@ module.prepBuild = function ()
     module.requireBuildFile("pak_conf.lua")
     module.requireBuildFile("build")
     module.requireBuildFile(".build_cache")
-    lfs.mkdir(".build_cache/current")
-    lfs.mkdir(".build_cache/current/scripts")
-    lfs.mkdir(".build_cache/current/pkgs")
-    lfs.mkdir(".build_cache/current/resource")
+    mkdir(".build_cache/current")
+    mkdir(".build_cache/current/scripts")
+    mkdir(".build_cache/current/pkgs")
+    mkdir(".build_cache/current/resource")
 end
 module.warn = function (message)
     print("# Pak WARN  "..message)
