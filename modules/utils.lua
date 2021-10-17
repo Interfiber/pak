@@ -22,7 +22,7 @@ end
 module.isFolderEmpty = function (folder)
     module.requireBuildFile(folder)
     local files = 0
-    local output = io.popen("ls -al")
+    local output = io.popen("ls -l "..folder, "r")
     for file in output:lines() do
         files = files + 1
     end
