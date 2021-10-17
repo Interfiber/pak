@@ -1,6 +1,9 @@
 return {
   apperance = {
-
+    welcome_html = "welcome.html",
+    finished_html = "done.html",
+    license_file = "../LICENSE",
+    readme = "README.txt"
   },
   components = {
     default = {
