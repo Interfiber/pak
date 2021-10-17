@@ -398,6 +398,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#componentscripts-table" class="md-nav__link">
+    component.scripts [Table]
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -557,6 +564,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#componentscripts-table" class="md-nav__link">
+    component.scripts [Table]
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -669,6 +683,15 @@
 <h2 id="componentselected-bool">component.selected [Bool]</h2>
 <p>Dictates if the current component is selected by default in the installer customization screen
 <div class="highlight"><pre><span></span><code><span class="n">components</span><span class="p">.</span><span class="n">other</span><span class="p">.</span><span class="n">selected</span> <span class="o">=</span> <span class="kc">true</span>
+</code></pre></div></p>
+<h2 id="componentscripts-table">component.scripts [Table]</h2>
+<p>A list of scripts for the current package component.
+<div class="highlight"><pre><span></span><code><span class="n">components</span><span class="p">.</span><span class="n">other</span><span class="p">.</span><span class="n">scripts</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1">-- Preinstall scripts run before the install starts for this package component</span>
+    <span class="n">preinstall</span> <span class="o">=</span> <span class="s2">&quot;preinstaller&quot;</span><span class="p">,</span>
+    <span class="c1">-- Postinstall scripts run after the install completes for this package component</span>
+    <span class="n">postinstall</span> <span class="o">=</span> <span class="s2">&quot;postinstaller&quot;</span>
+<span class="p">}</span>
 </code></pre></div></p>
                 
               
