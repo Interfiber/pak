@@ -1,3 +1,0 @@
-#!/bin/bash
-
-echo "Running before install" >> /tmp/pak_2.log

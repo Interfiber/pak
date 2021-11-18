@@ -1,0 +1,14 @@
+{
+  "component_default": {
+    "$install_dir": "/opt/installer",
+    "$name": "default",
+    "$payloadName": "default",
+    "$selected": true,
+    "$visible": false
+  },
+  "components": [
+    "default"
+  ],
+  "projectName": "my cool project",
+  "version": "0.0.1"
+}
