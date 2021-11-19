@@ -25,9 +25,7 @@ pub fn build(){
     let components = &config["components"];
     let org_name = config["orgName"].to_string().replace("\"", "");
     if org_name == "null" {
-        println!("ERROR! Failed to complete build!");
-        println!("Error: orgName is null");
-        std::process::exit(1);
+        utils::log_error("orgName is null!");
     }
     let mut dist = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>".to_string();
     // basic config
@@ -40,6 +38,18 @@ pub fn build(){
         let pkg_name = component["$pkgName"].to_string().replace("\"", "");
         let payload_name = component["$payloadName"].to_string().replace("\"", "");
         let install_dir = component["$installDir"].to_string().replace("\"", "");
+        if name == "null" {
+            utils::log_error("$name is null!");
+        }
+        if pkg_name == "null" {
+            utils::log_error("$pkgName is null!");
+        }
+        if install_dir == "null" {
+            utils::log_error("$installDir is null!");
+        }
+        if payload_name == "null" {
+            utils::log_error("$payloadName is null!");
+        }
         sp.message(format!("Building: {}", name));
         utils::create_dir(&format!(".build_cache/{}_temp", pkg_name));
         // Copy payload
@@ -68,6 +78,12 @@ pub fn build(){
         let component = &config[&format!("component_{}", component_name.to_string().replace("\"", ""))];
         let pkg_name = component["$pkgName"].to_string().replace("\"", "");
         let name = component["$name"].to_string().replace("\"", "");
+        if name == "null" {
+            utils::log_error("$name is null!");
+        }
+        if pkg_name == "null" {
+            utils::log_error("$pkgName is null!");
+        }
         dist = format!("{}\n<choice id=\"{}_install\" title=\"{}\">\n<pkg-ref id=\"{}_installer\" />\n</choice>", dist, tick, name, tick);
         dist = format!("{}\n<pkg-ref id=\"{}_installer\" version=\"1.0\" auth=\"Root\">{}.pkg</pkg-ref>", dist, tick, pkg_name);
         tick += 1;
@@ -77,6 +93,6 @@ pub fn build(){
     fs::write(".build_cache/Distfile", dist).expect("Failed to write dist file");
     sp.message("Building final package".to_string());
     Exec::shell(&format!("productbuild --quiet --distribution .build_cache/Distfile --package-path .build_cache/pkgs builds/out.pkg")).join().expect("Failed to build final package");
+    sp.message("Built Package".to_string());
     sp.stop();
-    println!("Built package.");
 }

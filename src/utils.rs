@@ -19,3 +19,8 @@ pub fn require_path(path: String){
         std::process::exit(1);
     }
 }
+pub fn log_error(message: &str){
+    println!("ERROR! Failed to complete build!");
+    println!("Error: {}", message);
+    std::process::exit(1);
+}
