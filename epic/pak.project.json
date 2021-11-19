@@ -1,14 +1,25 @@
 {
   "component_default": {
-    "$install_dir": "/opt/installer",
-    "$name": "default",
+    "$installDir": "/opt/installer",
+    "$name": "default stuff",
     "$payloadName": "default",
+    "$pkgName": "defaultPkg",
+    "$selected": true,
+    "$visible": false
+  },
+  "component_cool": {
+    "$installDir": "/opt/cool",
+    "$name": "super cool thing",
+    "$payloadName": "cool",
+    "$pkgName": "cool",
     "$selected": true,
     "$visible": false
   },
   "components": [
-    "default"
+    "default",
+    "cool"
   ],
   "projectName": "my cool project",
+  "orgName": "com.example",
   "version": "0.0.1"
 }

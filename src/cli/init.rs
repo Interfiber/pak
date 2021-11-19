@@ -15,12 +15,14 @@ pub fn init(){
         "projectName": "my cool project",
         "components": ["default"],
         "version": "0.0.1",
+        "orgName": "org.cool",
         "component_default": {
             "$name": "default",
+            "$pkgName": "defaultPkg",
             "$selected": true,
             "$visible": false,
             "$payloadName": "default",
-            "$install_dir": "/opt/installer"
+            "$installDir": "/opt/installer"
         }
     });
     std::fs::write(project_file_name, serde_json::to_string_pretty(&config).unwrap()).expect("Failed to write to config");

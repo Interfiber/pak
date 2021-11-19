@@ -1,4 +1,6 @@
 use std::fs;
+use std::path::Path;
+
 pub fn create_dir(path: &str){
     match fs::create_dir(path){
         Ok(_) => print!(""),
@@ -7,5 +9,13 @@ pub fn create_dir(path: &str){
             println!("Error log: {}", error);
             std::process::exit(1);
         }
+    }
+}
+
+pub fn require_path(path: String){
+    if !Path::new(&path).exists(){
+        println!("ERROR! Failed to complete build:");
+        println!("File must be present: {}", path);
+        std::process::exit(1);
     }
 }
