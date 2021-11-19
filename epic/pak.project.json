@@ -4,16 +4,19 @@
     "$name": "default stuff",
     "$payloadName": "default",
     "$pkgName": "defaultPkg",
+    "$desc": "The default package",
     "$selected": true,
-    "$visible": false
+    "$visible": true,
+    "$selectable": false
   },
   "component_cool": {
     "$installDir": "/opt/cool",
     "$name": "super cool thing",
     "$payloadName": "cool",
     "$pkgName": "cool",
-    "$selected": true,
-    "$visible": false
+    "$desc": "Super cool package!",
+    "$selected": false,
+    "$visible": true
   },
   "components": [
     "default",

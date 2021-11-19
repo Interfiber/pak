@@ -78,13 +78,33 @@ pub fn build(){
         let component = &config[&format!("component_{}", component_name.to_string().replace("\"", ""))];
         let pkg_name = component["$pkgName"].to_string().replace("\"", "");
         let name = component["$name"].to_string().replace("\"", "");
+        let mut desc = component["$desc"].to_string().replace("\"", "");
+        let mut selected = component["$selected"].to_string().replace("\"", "");
+        let mut visible = component["$visible"].to_string().replace("\"", "");
+        let mut selectable = component["$selectable"].to_string().replace("\"", "");
+        // enabled
         if name == "null" {
             utils::log_error("$name is null!");
         }
         if pkg_name == "null" {
             utils::log_error("$pkgName is null!");
         }
-        dist = format!("{}\n<choice id=\"{}_install\" title=\"{}\">\n<pkg-ref id=\"{}_installer\" />\n</choice>", dist, tick, name, tick);
+        if desc == "null" {
+            desc = "".to_string();
+        }
+        if selected == "null" {
+            // default is true
+            selected = "true".to_string();
+        }
+        if visible == "null" {
+            // default is true
+            visible = "true".to_string();
+        }
+        if selectable == "null" {
+            // default is true
+            selectable = "true".to_string();
+        }
+        dist = format!("{}\n<choice id=\"{tick}_install\" title=\"{name}\" description=\"{desc}\" start_selected=\"{selected}\" visible=\"{visible}\" enabled=\"{selectable}\">\n<pkg-ref id=\"{tick}_installer\" />\n</choice>", dist, tick = tick, name = name, desc = desc, selected = selected, visible = visible, selectable = selectable);
         dist = format!("{}\n<pkg-ref id=\"{}_installer\" version=\"1.0\" auth=\"Root\">{}.pkg</pkg-ref>", dist, tick, pkg_name);
         tick += 1;
     }
