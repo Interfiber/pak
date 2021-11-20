@@ -9,7 +9,7 @@ cargo install pakcli
 ## Manual
 To install manually download the latest package installer for [here](https://github.com/Interfiber/pak/releases/latest).
 
-## 🍻 Homebrew (OUTDATED)
+## 🍻 Homebrew
 ```bash
 brew install Interfiber/homebrew-tap/pak
 ```
