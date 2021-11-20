@@ -1,1 +1,1 @@
-echo "bob" >> /tmp/cool
+echo "test" >> /tmp/cool
