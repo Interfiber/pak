@@ -22,6 +22,10 @@
     "default",
     "cool"
   ],
+  "apperance": {
+    "$readme": "README.txt",
+    "$license": "license.txt"
+  },
   "projectName": "my cool project",
   "orgName": "com.example",
   "version": "0.0.1"

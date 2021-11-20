@@ -20,9 +20,10 @@ pub fn init(){
             "$name": "default",
             "$pkgName": "defaultPkg",
             "$selected": true,
-            "$visible": false,
+            "$selectable": false,
+            "$visible": true,
             "$payloadName": "default",
-            "$installDir": "/opt/installer"
+            "$installDir": "/opt/installer",
         }
     });
     std::fs::write(project_file_name, serde_json::to_string_pretty(&config).unwrap()).expect("Failed to write to config");

@@ -24,3 +24,11 @@ pub fn log_error(message: &str){
     println!("Error: {}", message);
     std::process::exit(1);
 }
+pub fn copy_file(orig: &str, new: &str){
+    match fs::copy(orig, new){
+        Ok(_) => print!(""),
+        Err(err) => {
+            log_error(&err.to_string());
+        }
+    }
+}

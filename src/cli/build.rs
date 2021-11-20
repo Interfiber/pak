@@ -23,6 +23,7 @@ pub fn build(){
     let project_name = config["projectName"].to_string().replace("\"", "");
     let version = config["version"].to_string().replace("\"", "");
     let components = &config["components"];
+    let apperance = &config["apperance"];
     let org_name = config["orgName"].to_string().replace("\"", "");
     if org_name == "null" {
         utils::log_error("orgName is null!");
@@ -30,8 +31,10 @@ pub fn build(){
     let mut dist = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>".to_string();
     // basic config
     dist = format!("{}\n<installer-gui-script authoringTool=\"pak\" minSpecVersion=\"1.0\">", dist);
+    dist = format!("{}\n<title>{}</title>", dist, project_name);
     dist = format!("{}\n<choices-outline>", dist);
     let mut tick = 0;
+    dist = format!("{}\n<!--    Choice Data    -->", dist);
     for component_name in components.as_array().expect("Failed to unwrap object"){
         let component = &config[&format!("component_{}", component_name.to_string().replace("\"", ""))];
         let name = component["$name"].to_string().replace("\"", "");
@@ -64,16 +67,18 @@ pub fn build(){
         };
         copy_with_progress(payload_src_path, &format!("{}", payload_dest_path), &options, handle).expect("Failed to copy payload");
         sp.message("Building package component...".to_string());
-        Exec::shell(&format!("pkgbuild --identifier {}.{} --version 0.0.1 --root {}/{} --quiet --install-location {} .build_cache/pkgs/{}.pkg", org_name, pkg_name, payload_dest_path.to_string(), payload_name, install_dir, pkg_name)).join().unwrap();
+        Exec::shell(&format!("pkgbuild --identifier {}.{} --version {} --root {}/{} --quiet --install-location {} .build_cache/pkgs/{}.pkg", org_name, pkg_name, version, payload_dest_path.to_string(), payload_name, install_dir, pkg_name)).join().unwrap();
         // Add choices
         dist = format!("{}\n<line choice=\"{}_install\" />", dist, tick.to_string());
         tick += 1;
     }
+    dist = format!("{}\n<!--    End of Section    -->", dist);
     sp.message("Building Distribution".to_string());
     // close choices
     dist = format!("{}\n</choices-outline>", dist);
     tick = 0;
     // add choice tags
+    dist = format!("{}\n<!--    Package Reference data and choices   -->", dist);
     for component_name in components.as_array().expect("Failed to unwrap object"){
         let component = &config[&format!("component_{}", component_name.to_string().replace("\"", ""))];
         let pkg_name = component["$pkgName"].to_string().replace("\"", "");
@@ -108,11 +113,38 @@ pub fn build(){
         dist = format!("{}\n<pkg-ref id=\"{}_installer\" version=\"1.0\" auth=\"Root\">{}.pkg</pkg-ref>", dist, tick, pkg_name);
         tick += 1;
     }
+    dist = format!("{}\n<!--    End of Section    -->", dist);
+    // add apperance data
+    dist = format!("{}\n<!--    Apperance Data    -->", dist);
+    match fs::create_dir_all(".build_cache/resources/"){
+        Ok(_) => print!(""),
+        Err(err) => {
+            utils::log_error(&err.to_string());
+        }
+    }
+    if apperance != "null" {
+        // update apperance config
+        let readme = apperance["$readme"].to_string().replace("\"", "");
+        let license = apperance["$license"].to_string().replace("\"", "");
+        if readme != "null" {
+            sp.message("Updating apperance config for: README".to_string());
+            utils::require_path(readme.to_string());
+            utils::copy_file(&readme.to_string(), ".build_cache/resources/README.txt");
+            dist = format!("{}\n<readme file=\"README.txt\" mime-type=\"text/plain\" />", dist);
+        }
+        if license != "null" {
+            sp.message("Updating apperance config for: license".to_string());
+            utils::require_path(license.to_string());
+            utils::copy_file(&license.to_string(), ".build_cache/resources/license.txt");
+            dist = format!("{}\n<license file=\"license.txt\" />", dist);
+        }
+    }
     // end xml
+    dist = format!("{}\n<!--    End of Section    -->", dist);
     dist = format!("{}\n</installer-gui-script>", dist);
     fs::write(".build_cache/Distfile", dist).expect("Failed to write dist file");
     sp.message("Building final package".to_string());
-    Exec::shell(&format!("productbuild --quiet --distribution .build_cache/Distfile --package-path .build_cache/pkgs builds/out.pkg")).join().expect("Failed to build final package");
+    Exec::shell(&format!("productbuild --quiet --resources .build_cache/resources --distribution .build_cache/Distfile --package-path .build_cache/pkgs builds/out.pkg")).join().expect("Failed to build final package");
     sp.message("Built Package".to_string());
     sp.stop();
 }
