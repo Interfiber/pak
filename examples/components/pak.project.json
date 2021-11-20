@@ -1,0 +1,26 @@
+{
+  "component_default": {
+    "$installDir": "/opt/installer",
+    "$name": "default",
+    "$payloadName": "default",
+    "$pkgName": "defaultPkg",
+    "$selectable": false,
+    "$selected": true,
+    "$visible": true
+  },
+  "component_other": {
+    "$installDir": "/opt/installer",
+    "$name": "Other Package",
+    "$payloadName": "other",
+    "$pkgName": "otherPkg",
+    "$selected": false,
+    "$visible": true
+  },
+  "components": [
+    "default",
+    "other"
+  ],
+  "orgName": "org.cool",
+  "projectName": "my cool project",
+  "version": "0.0.1"
+}

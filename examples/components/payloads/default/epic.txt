@@ -1,0 +1,2 @@
+Hello, World!
+This was installed via a MacOS installer package
