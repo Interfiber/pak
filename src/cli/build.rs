@@ -41,6 +41,8 @@ pub fn build(){
         let pkg_name = component["$pkgName"].to_string().replace("\"", "");
         let payload_name = component["$payloadName"].to_string().replace("\"", "");
         let install_dir = component["$installDir"].to_string().replace("\"", "");
+        let scripts_folder = &component["$scriptsFolder"].to_string().replace("\"", "");
+        let mut extra_args = String::new();
         if name == "null" {
             utils::log_error("$name is null!");
         }
@@ -67,7 +69,10 @@ pub fn build(){
         };
         copy_with_progress(payload_src_path, &format!("{}", payload_dest_path), &options, handle).expect("Failed to copy payload");
         sp.message("Building package component...".to_string());
-        Exec::shell(&format!("pkgbuild --identifier {}.{} --version {} --root {}/{} --quiet --install-location {} .build_cache/pkgs/{}.pkg", org_name, pkg_name, version, payload_dest_path.to_string(), payload_name, install_dir, pkg_name)).join().unwrap();
+        if scripts_folder != "null" {
+            extra_args = format!("--scripts {}", scripts_folder).to_string();
+        }
+        Exec::shell(&format!("pkgbuild --identifier {}.{} --version {} --root {}/{} --quiet --install-location {} {} .build_cache/pkgs/{}.pkg", org_name, pkg_name, version, payload_dest_path.to_string(), payload_name, install_dir, extra_args, pkg_name)).join().unwrap();
         // Add choices
         dist = format!("{}\n<line choice=\"{}_install\" />", dist, tick.to_string());
         tick += 1;

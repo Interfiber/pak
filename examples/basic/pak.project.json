@@ -6,7 +6,8 @@
     "$pkgName": "defaultPkg",
     "$selectable": false,
     "$selected": true,
-    "$visible": true
+    "$visible": true,
+    "$scriptsFolder": "scripts"
   },
   "components": [
     "default"
