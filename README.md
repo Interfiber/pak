@@ -7,7 +7,12 @@ for software on MacOS, this is what pak aims to fix.
 
 ## Commands
 
-### Build a project
+## Create a project
 ```bash
-pak build
+pakcli init
+```
+
+## Build a project
+```bash
+pakcli build
 ```
