@@ -24,7 +24,7 @@ cd installer
 # Codesign
 codesign --deep --force --verbose --sign "$CODESIGN_ID" --options=runtime payloads/default/bin/pakcli
 # Build installer
-../target/release/pak build
+../target/release/pakcli build
 mv builds/out.pkg builds/pak_x86_64.pkg
 echo "Built package"
 echo "Press enter to sign package"
@@ -32,3 +32,4 @@ read
 productsign --sign "$INSTALLER_ID" builds/*.pkg installer.pkg
 xcrun notarytool submit --keychain-profile "xcode" --wait installer.pkg
 xcrun stapler staple installer.pkg
+rm -rf .build_cache

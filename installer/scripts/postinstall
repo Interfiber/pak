@@ -5,7 +5,7 @@ if [ -f "/etc/paths.d/pak" ]; then
     echo "Status: Complete" >> /tmp/pak.postinstall.log
 else
     touch /etc/paths.d/pak
-    cat "/opt/pak/bin" >> /etc/paths.d/pak
+    echo "/opt/pak/bin" >> /etc/paths.d/pak
     echo "Status: Complete" >> /tmp/pak.postinstall.log
 fi
 chmod +x /opt/pak/bin/*
