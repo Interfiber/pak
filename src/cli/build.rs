@@ -126,6 +126,8 @@ pub fn build(){
         // update apperance config
         let readme = apperance["$readme"].to_string().replace("\"", "");
         let license = apperance["$license"].to_string().replace("\"", "");
+        let welcome_html = apperance["$welcomeHtml"].to_string().replace("\"", "");
+        let complete_html = apperance["$conclusionHtml"].to_string().replace("\"", "");
         if readme != "null" {
             sp.message("Updating apperance config for: README".to_string());
             utils::require_path(readme.to_string());
@@ -137,6 +139,18 @@ pub fn build(){
             utils::require_path(license.to_string());
             utils::copy_file(&license.to_string(), ".build_cache/resources/license.txt");
             dist = format!("{}\n<license file=\"license.txt\" />", dist);
+        }
+        if welcome_html != "null" {
+            sp.message("Updating apperance config for: welcome.html".to_string());
+            utils::require_path(welcome_html.to_string());
+            utils::copy_file(&welcome_html.to_string(), ".build_cache/resources/welcome.html");
+            dist = format!("{}\n<welcome file=\"welcome.html\" mime-type=\"text/html\" />", dist);
+        }
+        if complete_html != "null" {
+            sp.message("Updating apperance config for: complete.html".to_string());
+            utils::require_path(complete_html.to_string());
+            utils::copy_file(&complete_html.to_string(), ".build_cache/resources/complete.html");
+            dist = format!("{}\n<conclusion file=\"complete.html\" mime-type=\"text/html\" />", dist);
         }
     }
     // end xml
