@@ -1,5 +1,5 @@
 [package]
-name = "pak"
+name = "pakcli"
 version = "0.1.0"
 description = "pak is a tool for bundling MacOS software into installer packages"
 homepage = "https://interfiber.dev/pak"
