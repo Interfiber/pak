@@ -1,0 +1,23 @@
+{
+  "component_default": {
+    "$installDir": "/opt/pak",
+    "$name": "Pak Core",
+    "$desc": "The default pak software install option",
+    "$payloadName": "default",
+    "$pkgName": "defaultPkg",
+    "$selectable": false,
+    "$selected": true,
+    "$visible": true
+  },
+  "components": [
+    "default"
+  ],
+  "apperance": {
+    "$license": "LICENSE",
+    "$welcomeHtml": "welcome.html",
+    "$conclusionHtml": "done.html"
+  },
+  "orgName": "dev.interfiber.pak",
+  "projectName": "pak",
+  "version": "0.2.0"
+}
