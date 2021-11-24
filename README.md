@@ -16,3 +16,6 @@ pakcli init
 ```bash
 pakcli build
 ```
+
+## Docs
+Docs can be found [here](https://interfiber.dev/pak)
