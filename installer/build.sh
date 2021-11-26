@@ -17,9 +17,10 @@ cargo build --release
 rm -rf installer/payloads/default
 mkdir -p installer/payloads/default/bin
 cp LICENSE installer/payloads/default/LICENSE
-cp ./target/release/pak installer/payloads/default/bin/pakcli
+cp ./target/release/pakcli installer/payloads/default/bin/pakcli
 chmod +x installer/payloads/default/bin/pakcli
-cp LICENSE installer/LICENSE
+cp LICENSE installer/payloads/default/LICENSE
+cp -rf examples installer/payloads/default/examples
 cd installer
 # Codesign
 codesign --deep --force --verbose --sign "$CODESIGN_ID" --options=runtime payloads/default/bin/pakcli

@@ -11,7 +11,6 @@ use subprocess::Exec;
 pub fn build(){
     let build_cache_name = ".build_cache";
     let project_file_name = "pak.project.json";
-
     let sp = Spinner::new(&Spinners::Dots12, "Building Package".into());
     utils::create_dir(build_cache_name);
     utils::create_dir(".build_cache/pkgs");
@@ -133,6 +132,7 @@ pub fn build(){
         let license = apperance["$license"].to_string().replace("\"", "");
         let welcome_html = apperance["$welcomeHtml"].to_string().replace("\"", "");
         let complete_html = apperance["$conclusionHtml"].to_string().replace("\"", "");
+        let enable_background = &apperance["$enableBackground"].to_string().replace("\"", "");
         let background_config = &apperance["$backgroundConfig"];
         if readme != "null" {
             sp.message("Updating apperance config for: README".to_string());
@@ -158,7 +158,7 @@ pub fn build(){
             utils::copy_file(&complete_html.to_string(), ".build_cache/resources/complete.html");
             dist = format!("{}\n<conclusion file=\"complete.html\" mime-type=\"text/html\" />", dist);
         }
-        if background_config != "null" {
+        if enable_background != "null" {
             let image_file = background_config["$imageFile"].to_string().replace("\"", "");
             let align = background_config["$align"].to_string().replace("\"", "");
             if image_file == "null" {
