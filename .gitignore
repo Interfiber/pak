@@ -1,6 +1,4 @@
-example/.build_cache
-example/build
-
 # Added by cargo
 
 /target
+.DS_Store
