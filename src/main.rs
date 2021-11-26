@@ -7,7 +7,7 @@ mod utils;
 fn main() {
     // Create the clap cli app
     let app = App::new("pak")
-        .version("0.0.1")
+        .version("1.0.0")
         .author("Interfiber <webmaster@interfiber.dev>")
         .about("MacOS package installer builder")
         .setting(AppSettings::ArgRequiredElseHelp)

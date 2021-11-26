@@ -1,11 +1,11 @@
 [package]
 name = "pakcli"
-version = "0.2.1"
+version = "1.0.0"
 description = "pak is a tool for bundling MacOS software into installer packages"
 homepage = "https://interfiber.dev/pak"
 readme = "README.md"
-repository = "https://github.com/Interfiber/pak"
-documentation = "https://interfiber.github.io/pak/"
+repository = "https://gitlab.com/Interfiber/pak"
+documentation = "https://interfiber.dev/pak"
 license = "MIT"
 edition = "2021"
 
