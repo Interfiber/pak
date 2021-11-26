@@ -179,6 +179,15 @@ pub fn build(){
     fs::write(".build_cache/Distfile", dist).expect("Failed to write dist file");
     sp.message("Building final package".to_string());
     Exec::shell(&format!("productbuild --quiet --resources .build_cache/resources --distribution .build_cache/Distfile --package-path .build_cache/pkgs builds/out.pkg")).join().expect("Failed to build final package");
+    // Cleanup
+    match fs::remove_dir_all(".build_cache") {
+        Ok(_) => print!(""),
+        Err(err) => {
+            println!("Failed to remove .build_cache folder.");
+            println!("Error: {}", err);
+            // Dont exit, its not a big deal
+        }
+    }
     sp.message("Built Package".to_string());
     sp.stop();
 }
