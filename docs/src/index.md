@@ -5,11 +5,10 @@ MacOS package installer builder
 <details>
 <summary>Download Links</summary>
 <br>
-<a href="https://github.com/Interfiber/pak/releases/download/v0.2.1/installer.pkg">Download v0.2.1</a>
+<a href="https://gitlab.com/Interfiber/pak/uploads/9cdd38569a5057cb00f1e516d186b13c/installer.pkg">Download v0.2.1</a>
 
-<a href="https://github.com/Interfiber/pak/releases/download/v0.2.0/installer.pkg">Download v0.2.0</a>
+<a href="https://gitlab.com/Interfiber/pak/uploads/5f506877c4500e1616a57a12915dfe07/installer.pkg">Download v0.2.0</a>
 
-<a href="https://github.com/Interfiber/pak/releases/download/v0.1/Pak.Installer.pkg">Download unsupported</a>
 </details>
 
 
