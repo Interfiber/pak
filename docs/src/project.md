@@ -31,7 +31,7 @@ Array of components to build into the final package
 Components are declared as objects in the project file like this:
 ```json
 "component_super_epic": {
-
+    
 }
 ```
 the name of the object must start with ```component``` then a underscore and a name with no spaces
@@ -61,3 +61,43 @@ If the component should be visible to the user when choosing what packages to be
 ## $scriptsFolder [Path]
 Relative path to the folder containing scripts for the package
 For more info on scripts see the [Scripts](scripts.md) section
+
+# Section: Apperance
+Apperance settings apply to the entire installer, the apperance config allows you to change background image, license, readme, welcome, and more.
+```json
+"apperance": {
+    "comment": "Apperance config goes inside this json object"
+}
+```
+
+## $license [Path]
+Relative path to the text file used for the software license. During the install the user will need to agree to this license in order to continue
+
+## $welcomeHtml [Path]
+Relative path to the html file used for the welcome screen. The rendered html will be displayed to the user when the installer launches
+
+## $conclusionHtml [Path]
+Relative path to the html file used for the conclusion screen. The rendered html will be displayed to the user when the install finishes with success
+
+## $readme [Path]
+Relative path to the text file used for the readme screen. The contents of the readme file will be showed to the user before the install starts
+
+## $enableBackground [Bool]
+Tells pak if it should look for a background config, default is false
+
+# Section: Background config
+The background config is a subsection of the apperance section, as the config for it will be placed inside the apperance object likle below:
+```json
+"apperance": {
+    "$backgroundConfig": {}
+}
+```
+Note that pak will not look for a background config unless ```$enableBackground``` is set to true in the apperance config
+
+## $imageFile [Path]
+Relative path to the image file used as the background
+
+## $align [String]
+Align type for the image, types are:
+
+```center```, ```left```, ```right```, ```top```, ```bottom```, ```topleft```, ```topright```, ```bottomleft```, and ```bottomright```
