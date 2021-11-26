@@ -133,6 +133,7 @@ pub fn build(){
         let license = apperance["$license"].to_string().replace("\"", "");
         let welcome_html = apperance["$welcomeHtml"].to_string().replace("\"", "");
         let complete_html = apperance["$conclusionHtml"].to_string().replace("\"", "");
+        let background_config = &apperance["$backgroundConfig"];
         if readme != "null" {
             sp.message("Updating apperance config for: README".to_string());
             utils::require_path(readme.to_string());
@@ -156,6 +157,20 @@ pub fn build(){
             utils::require_path(complete_html.to_string());
             utils::copy_file(&complete_html.to_string(), ".build_cache/resources/complete.html");
             dist = format!("{}\n<conclusion file=\"complete.html\" mime-type=\"text/html\" />", dist);
+        }
+        if background_config != "null" {
+            let image_file = background_config["$imageFile"].to_string().replace("\"", "");
+            let align = background_config["$align"].to_string().replace("\"", "");
+            if image_file == "null" {
+                utils::log_error("imageFile must have a value!");
+            }
+            if align == "null" {
+                utils::log_error("align must have a value!");
+            }
+            utils::require_path(image_file.to_string());
+            utils::copy_file(&image_file, ".build_cache/resources/background.png");
+            sp.message("Updating apperance config for: background".to_string());
+            dist = format!("{}\n<background file=\"background.png\" alignment=\"{}\" />", dist, align);
         }
     }
     // end xml
