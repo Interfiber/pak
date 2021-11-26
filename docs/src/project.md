@@ -62,11 +62,11 @@ If the component should be visible to the user when choosing what packages to be
 Relative path to the folder containing scripts for the package
 For more info on scripts see the [Scripts](scripts.md) section
 
-# Section: Apperance
-Apperance settings apply to the entire installer, the apperance config allows you to change background image, license, readme, welcome, and more.
+# Section: Appearance
+Appearance settings apply to the entire installer, the Appearance config allows you to change background image, license, readme, welcome, and more.
 ```json
-"apperance": {
-    "comment": "Apperance config goes inside this json object"
+"appearance": {
+    "comment": "Appearance config goes inside this json object"
 }
 ```
 
@@ -86,13 +86,13 @@ Relative path to the text file used for the readme screen. The contents of the r
 Tells pak if it should look for a background config, default is false
 
 # Section: Background config
-The background config is a subsection of the apperance section, as the config for it will be placed inside the apperance object likle below:
+The background config is a subsection of the Appearance section, as the config for it will be placed inside the Appearance object likle below:
 ```json
-"apperance": {
+"appearance": {
     "$backgroundConfig": {}
 }
 ```
-Note that pak will not look for a background config unless ```$enableBackground``` is set to true in the apperance config
+Note that pak will not look for a background config unless ```$enableBackground``` is set to true in the Appearance config
 
 ## $imageFile [Path]
 Relative path to the image file used as the background

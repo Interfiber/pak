@@ -22,7 +22,7 @@ pub fn build(){
     let project_name = config["projectName"].to_string().replace("\"", "");
     let version = config["version"].to_string().replace("\"", "");
     let components = &config["components"];
-    let apperance = &config["apperance"];
+    let appearance = &config["appearance"];
     let org_name = config["orgName"].to_string().replace("\"", "");
     if org_name == "null" {
         utils::log_error("orgName is null!");
@@ -118,42 +118,42 @@ pub fn build(){
         tick += 1;
     }
     dist = format!("{}\n<!--    End of Section    -->", dist);
-    // add apperance data
-    dist = format!("{}\n<!--    Apperance Data    -->", dist);
+    // add appearance data
+    dist = format!("{}\n<!--    appearance Data    -->", dist);
     match fs::create_dir_all(".build_cache/resources/"){
         Ok(_) => print!(""),
         Err(err) => {
             utils::log_error(&err.to_string());
         }
     }
-    if apperance != "null" {
-        // update apperance config
-        let readme = apperance["$readme"].to_string().replace("\"", "");
-        let license = apperance["$license"].to_string().replace("\"", "");
-        let welcome_html = apperance["$welcomeHtml"].to_string().replace("\"", "");
-        let complete_html = apperance["$conclusionHtml"].to_string().replace("\"", "");
-        let enable_background = &apperance["$enableBackground"].to_string().replace("\"", "");
-        let background_config = &apperance["$backgroundConfig"];
+    if appearance != "null" {
+        // update appearance config
+        let readme = appearance["$readme"].to_string().replace("\"", "");
+        let license = appearance["$license"].to_string().replace("\"", "");
+        let welcome_html = appearance["$welcomeHtml"].to_string().replace("\"", "");
+        let complete_html = appearance["$conclusionHtml"].to_string().replace("\"", "");
+        let enable_background = &appearance["$enableBackground"].to_string().replace("\"", "");
+        let background_config = &appearance["$backgroundConfig"];
         if readme != "null" {
-            sp.message("Updating apperance config for: README".to_string());
+            sp.message("Updating appearance config for: README".to_string());
             utils::require_path(readme.to_string());
             utils::copy_file(&readme.to_string(), ".build_cache/resources/README.txt");
             dist = format!("{}\n<readme file=\"README.txt\" mime-type=\"text/plain\" />", dist);
         }
         if license != "null" {
-            sp.message("Updating apperance config for: license".to_string());
+            sp.message("Updating appearance config for: license".to_string());
             utils::require_path(license.to_string());
             utils::copy_file(&license.to_string(), ".build_cache/resources/license.txt");
             dist = format!("{}\n<license file=\"license.txt\" />", dist);
         }
         if welcome_html != "null" {
-            sp.message("Updating apperance config for: welcome.html".to_string());
+            sp.message("Updating appearance config for: welcome.html".to_string());
             utils::require_path(welcome_html.to_string());
             utils::copy_file(&welcome_html.to_string(), ".build_cache/resources/welcome.html");
             dist = format!("{}\n<welcome file=\"welcome.html\" mime-type=\"text/html\" />", dist);
         }
         if complete_html != "null" {
-            sp.message("Updating apperance config for: complete.html".to_string());
+            sp.message("Updating appearance config for: complete.html".to_string());
             utils::require_path(complete_html.to_string());
             utils::copy_file(&complete_html.to_string(), ".build_cache/resources/complete.html");
             dist = format!("{}\n<conclusion file=\"complete.html\" mime-type=\"text/html\" />", dist);
@@ -169,7 +169,7 @@ pub fn build(){
             }
             utils::require_path(image_file.to_string());
             utils::copy_file(&image_file, ".build_cache/resources/background.png");
-            sp.message("Updating apperance config for: background".to_string());
+            sp.message("Updating appearance config for: background".to_string());
             dist = format!("{}\n<background file=\"background.png\" alignment=\"{}\" />", dist, align);
         }
     }

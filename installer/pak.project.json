@@ -13,7 +13,7 @@
   "components": [
     "default"
   ],
-  "apperance": {
+  "appearance": {
     "$license": "LICENSE",
     "$welcomeHtml": "welcome.html",
     "$conclusionHtml": "done.html"
