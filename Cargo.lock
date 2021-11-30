@@ -1168,6 +1168,7 @@ name = "pakr"
 version = "0.1.0"
 dependencies = [
  "eframe",
+ "serde_json",
  "subprocess",
 ]
 
