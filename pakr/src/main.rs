@@ -1,32 +1,60 @@
-mod homepage;
-mod pak_cli;
-mod project;
-use std::env;
-mod project_screen;
-fn main() {
-    let args: Vec<String> = env::args().collect();
-    println!("Parsing cli args");
-    if args.len() != 1 {
-        if args[1] == "load_project" {
-            if args.len() != 3 {
-                println!("Failed to load project: folder not given");
-                std::process::exit(1);
-            } else {
-                println!("Loading project...");
-                println!("Project Folder: {}", args[2]);
-                std::fs::write("/tmp/pakr_project_folder", &args[2].to_string()).expect("Failed to write temp file");
-                let options = eframe::NativeOptions {
-                    drag_and_drop_support: true,
-                    ..Default::default()
-                };
-                eframe::run_native(Box::new(project_screen::ProjectScreen::default()), options);
+use iced::button;
+use iced::{Button, Column, Text, Sandbox, Settings, Element, Align};
+
+#[derive(Default)]
+struct Counter {
+    value: i32,
+    increment_button: button::State,
+    decrement_button: button::State,
+}
+
+impl Sandbox for Counter {
+
+    type Message = Message;
+
+    fn new() -> Self {
+        Self::default()
+    }
+
+    fn title(&self) -> String {
+        String::from("Pakr - GUI frontend for pak")
+    }
+
+    fn view(&mut self) -> Element<Message> {
+        Column::new()
+            .padding(20)
+            .align_items(Align::Center)
+            .push(
+                Button::new(&mut self.increment_button, Text::new("Increment"))
+                .on_press(Message::IncrementPressed)
+            )
+            .push(
+                Text::new(&self.value.to_string()).size(50),
+            )
+            .push(
+                Button::new(&mut self.decrement_button, Text::new("Decrement"))
+                .on_press(Message::DecrementPressed),
+            ).into()
+    }
+
+    fn update(&mut self, message: Message) {
+        match message {
+            Message::IncrementPressed => {
+                self.value += 1;
+            },
+            Message::DecrementPressed => {
+                self.value -= 1;
             }
         }
-    } else {
-        let options = eframe::NativeOptions {
-            drag_and_drop_support: true,
-            ..Default::default()
-        };
-        eframe::run_native(Box::new(homepage::WelcomeScreen::default()), options);
     }
+}
+
+#[derive(Debug, Clone, Copy)]
+pub enum Message {
+    IncrementPressed,
+    DecrementPressed,
+}
+
+fn main() {
+    Counter::run(Settings::default()).unwrap();
 }
