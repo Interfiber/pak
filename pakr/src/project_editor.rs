@@ -2,6 +2,7 @@ use iced::button;
 use iced::{Button, Column, Text, Sandbox, Settings, Element, Align};
 use std::path::Path;
 use iced::text_input::TextInput;
+use crate::project::create_project;
 
 #[derive(Default)]
 pub struct ProjectEditor {
@@ -51,14 +52,16 @@ impl Sandbox for ProjectEditor {
         match message {
             Message::NewProject => {
                 println!("Creating new project...");
+                create_project(self.project_folder.to_string());
+                self.project_folder_status = "Loading project...".to_string();
             },
             Message::ProjectFolderUpdated(value) => {
                 self.project_folder = value.to_string();
                 let path = Path::new(&value);
                 if path.exists(){
-                    self.project_folder_status = "Project creatable".to_string();
-                } else {
                     self.project_folder_status = "Project NOT creatable".to_string();
+                } else {
+                    self.project_folder_status = "Project creatable".to_string();
                 }
             }
         }
