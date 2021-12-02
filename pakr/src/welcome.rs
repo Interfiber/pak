@@ -5,7 +5,7 @@ use iced::text_input::TextInput;
 use crate::project::create_project;
 
 #[derive(Default)]
-pub struct ProjectEditor {
+pub struct Welcome {
     project_folder_status: String,
     increment_button: button::State,
     project_folder_input: iced::text_input::State,
@@ -13,7 +13,7 @@ pub struct ProjectEditor {
 }
 
 
-impl Sandbox for ProjectEditor {
+impl Sandbox for Welcome {
 
     type Message = Message;
     fn new() -> Self {
@@ -73,6 +73,6 @@ pub enum Message {
     NewProject,
     ProjectFolderUpdated(String)
 }
-pub fn run_editor(){
-    ProjectEditor::run(Settings::default()).unwrap();
+pub fn open_welcome(){
+    Welcome::run(Settings::default()).unwrap();
 }
