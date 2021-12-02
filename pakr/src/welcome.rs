@@ -3,6 +3,7 @@ use iced::{Button, Column, Text, Sandbox, Settings, Element, Align};
 use std::path::Path;
 use iced::text_input::TextInput;
 use crate::project::create_project;
+use crate::project::open_project;
 
 #[derive(Default)]
 pub struct Welcome {
@@ -22,6 +23,27 @@ impl Sandbox for Welcome {
 
     fn title(&self) -> String {
         String::from("Pakr - GUI frontend for pak")
+    }
+
+    fn update(&mut self, message: Message) {
+        match message {
+            Message::NewProject => {
+                println!("Creating new project...");
+                create_project(self.project_folder.to_string());
+                self.project_folder_status = "Loading project...".to_string();
+                //     Open project in the pakr editor
+                open_project(self.project_folder.to_string());
+            },
+            Message::ProjectFolderUpdated(value) => {
+                self.project_folder = value.to_string();
+                let path = Path::new(&value);
+                if path.exists(){
+                    self.project_folder_status = "Project NOT creatable".to_string();
+                } else {
+                    self.project_folder_status = "Project creatable".to_string();
+                }
+            }
+        }
     }
 
     fn view(&mut self) -> Element<Message> {
@@ -46,25 +68,6 @@ impl Sandbox for Welcome {
                 Text::new(&self.project_folder_status.to_string()).size(24),
             )
             .into()
-    }
-
-    fn update(&mut self, message: Message) {
-        match message {
-            Message::NewProject => {
-                println!("Creating new project...");
-                create_project(self.project_folder.to_string());
-                self.project_folder_status = "Loading project...".to_string();
-            },
-            Message::ProjectFolderUpdated(value) => {
-                self.project_folder = value.to_string();
-                let path = Path::new(&value);
-                if path.exists(){
-                    self.project_folder_status = "Project NOT creatable".to_string();
-                } else {
-                    self.project_folder_status = "Project creatable".to_string();
-                }
-            }
-        }
     }
 }
 
