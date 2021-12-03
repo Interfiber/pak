@@ -29,7 +29,7 @@ pub fn open_project(folder: String){
     println!("Current executable location is: {}", current_exe);
     println!("Spawning editor...");
     println!("{} {}", current_exe, folder);
-    let cmd = Command::new(current_exe).arg(folder).spawn();
+    let _cmd = Command::new(current_exe).arg(folder).spawn();
     println!("Exiting main window...");
     std::process::exit(0);
 }

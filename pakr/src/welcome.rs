@@ -8,7 +8,7 @@ use crate::project::open_project;
 #[derive(Default)]
 pub struct Welcome {
     project_folder_status: String,
-    increment_button: button::State,
+    project_new_button: button::State,
     project_folder_input: iced::text_input::State,
     project_folder: String
 }
@@ -52,7 +52,7 @@ impl Sandbox for Welcome {
             .padding(20)
             .align_items(Align::Center)
             .push(
-                Button::new(&mut self.increment_button, Text::new("New Project"))
+                Button::new(&mut self.project_new_button, Text::new("New Project"))
                 .on_press(Message::NewProject)
             )
             .push(

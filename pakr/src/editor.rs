@@ -1,12 +1,14 @@
 use iced::button;
 use iced::{Button, Column, Text, Sandbox, Settings, Element, Align};
-use std::path::Path;
+use hashbrown::HashMap;
 use iced::text_input::TextInput;
-use crate::project::create_project;
 
 #[derive(Default)]
 pub struct Editor {
-    value: i32
+    project_folder_input: iced::text_input::State,
+    build_project_button: button::State,
+    project_info: HashMap<String, String>,
+    project_info_name: String
 }
 
 
@@ -23,19 +25,34 @@ impl Sandbox for Editor {
 
     fn update(&mut self, message: Message) {
         match message {
-           Message::SaveProject => {
+           Message::BuildProject => {
                println!("Saving project...");
-               self.value += 1;
-           }
+           },
+            Message::ProjectNameUpdated(name) => {
+                println!("Updating project name to {}...", name);
+                self.project_info.insert("projectName".to_string(), name.to_string());
+                self.project_info_name = name.to_string();
+            }
         }
     }
 
     fn view(&mut self) -> Element<Message> {
+        let project_name_input = TextInput::new(&mut self.project_folder_input,  "Project Name", &self.project_info_name, Message::ProjectNameUpdated).padding(10);
         Column::new()
             .padding(20)
             .align_items(Align::Center)
+            // Title
             .push(
-                Text::new("Welcome to pakr!").size(40)
+                Text::new("Pakr Project").size(40)
+            )
+            .push(
+                Button::new(&mut self.build_project_button, Text::new("Build Project")).on_press(Message::BuildProject)
+            )
+            .push(
+                Text::new("\n").height(iced::Length::Units(15))
+            )
+            .push(
+                project_name_input
             )
             .into()
     }
@@ -43,7 +60,8 @@ impl Sandbox for Editor {
 
 #[derive(Debug, Clone)]
 pub enum Message {
-    SaveProject
+    BuildProject,
+    ProjectNameUpdated(String)
 }
 pub fn open_editor(){
     Editor::run(Settings::default()).unwrap();
