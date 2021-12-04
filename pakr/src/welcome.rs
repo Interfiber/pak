@@ -47,6 +47,7 @@ impl Sandbox for Welcome {
     }
 
     fn view(&mut self) -> Element<Message> {
+        // Textboxes
         let project_folder_textbox = TextInput::new(&mut self.project_folder_input,  "Project Path", &self.project_folder, Message::ProjectFolderUpdated).padding(15);
         Column::new()
             .padding(20)
