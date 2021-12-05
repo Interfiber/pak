@@ -13,6 +13,7 @@ pub struct Editor {
     project_name_input: iced::text_input::State,
     project_org_id_input: iced::text_input::State,
     project_component_input: iced::text_input::State,
+    edit_component_button: button::State,
     new_component_button: button::State,
     build_project_button: button::State,
     load_project_button: button::State,
@@ -21,7 +22,8 @@ pub struct Editor {
     components_array: Vec<String>,
     project_info_name: String,
     project_info_orgid: String,
-    current_component_name: String
+    current_component_name: String,
+    has_unsaved_changes: bool
 }
 
 
@@ -33,7 +35,11 @@ impl Sandbox for Editor {
     }
 
     fn title(&self) -> String {
-        String::from("Pakr Project")
+        if self.has_unsaved_changes {
+            return "Pakr Project*".to_string()
+        } else {
+            return "Pakr Project".to_string();
+        }
     }
 
     fn update(&mut self, message: Message) {
@@ -78,6 +84,7 @@ impl Sandbox for Editor {
                         std::process::exit(1);
                     }
                 }
+                self.has_unsaved_changes = false;
                 println!("Executing build command");
                 pak_cli::execute_pak_cmd("build");
            },
@@ -85,11 +92,13 @@ impl Sandbox for Editor {
                 println!("Updating project name to {}...", name);
                 self.project_info.insert("projectName".to_string(), name.to_string());
                 self.project_info_name = name.to_string();
+                self.has_unsaved_changes = true;
             },
             Message::ProjectOrgIdUpdated(org) => {
                 println!("Updating project org id to {}...", org);
                 self.project_info.insert("orgId".to_string(), org.to_string());
                 self.project_info_orgid = org.to_string();
+                self.has_unsaved_changes = true;
             },
             Message::CurrentComponentNameUpdated(name) => {
                 println!("Updating current component id to {}...", name);
@@ -136,6 +145,7 @@ impl Sandbox for Editor {
                 self.components_array.push(name.to_string());
                 println!("{:?}", self.components);
                 println!("Added component");
+                self.has_unsaved_changes = true;
             }
         }
     }
@@ -185,6 +195,12 @@ impl Sandbox for Editor {
             )
             .push(
                 Button::new(&mut self.new_component_button, Text::new("Add component").size(20)).padding(6).on_press(Message::AddComponent).style(style::Button::FilterSelected)
+            )
+            .push(
+                Text::new("\n").height(iced::Length::Units(3))
+            )
+            .push(
+                Button::new(&mut self.edit_component_button, Text::new("Edit component").size(20)).padding(6).on_press(Message::AddComponent).style(style::Button::FilterSelected)
             )
             .into()
     }
