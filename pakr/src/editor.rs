@@ -13,6 +13,7 @@ pub struct Editor {
     project_name_input: iced::text_input::State,
     project_org_id_input: iced::text_input::State,
     project_component_input: iced::text_input::State,
+    component_editor_name_input: iced::text_input::State,
     edit_component_button: button::State,
     new_component_button: button::State,
     build_project_button: button::State,
@@ -23,7 +24,13 @@ pub struct Editor {
     project_info_name: String,
     project_info_orgid: String,
     current_component_name: String,
-    has_unsaved_changes: bool
+    component_name: String,
+    component_desc: String,
+    component_install_dir: String,
+    // the internal component name is the same as the component  name but its only updated using code, not the user
+    internal_component_name: String,
+    has_unsaved_changes: bool,
+    loaded_component: bool
 }
 
 
@@ -146,6 +153,39 @@ impl Sandbox for Editor {
                 println!("{:?}", self.components);
                 println!("Added component");
                 self.has_unsaved_changes = true;
+            },
+            Message::EditComponent => {
+                let name = &self.current_component_name.to_string();
+                println!("Loading component info for: {}", name);
+                let info = self.components.get(name).expect("Failed to load component info: invalid name");
+                self.component_name = info["$name"].to_string().replace("\"", "");
+                self.internal_component_name = name.to_string();
+                self.loaded_component = true;
+                println!("{:?}", info);
+            },
+            Message::ComponentNameUpdate(value) => {
+                if self.loaded_component {
+                    println!("Updating component name to {}", value);
+                    self.component_name = value.to_string();
+                    // Get json for current component
+                    let mut info_one = self.components.get(&self.internal_component_name).expect("Failed to load component info: invalid name").to_owned();
+                    let info = info_one.as_object_mut().unwrap();
+                    info["$name"] = serde_json::Value::String(value);
+                    println!("Updating in-memory component...");
+                    self.components.remove(&self.internal_component_name.to_string());
+                    // I know this could be simpler, but rust wouldnt let me.
+                    // But you can get it to work better please help!
+                    self.components.insert(self.internal_component_name.to_string(), json!({
+                        "$name": info["$name"].to_string().replace("\"", ""),
+                        "$installerDir": "/opt/placeholder",
+                        "$desc": "Description of component",
+                        "$payloadName": "nameOfPayload",
+                        "$pkgName": "smallPackageName",
+                        "$selectable": false,
+                        "$selected": true,
+                        "$visible": true
+                    }));
+                }   
             }
         }
     }
@@ -154,7 +194,8 @@ impl Sandbox for Editor {
         // Text boxes
         let project_name_input = TextInput::new(&mut self.project_name_input,  "Project Name", &self.project_info_name, Message::ProjectNameUpdated).padding(10);
         let project_org_id_input = TextInput::new(&mut self.project_org_id_input,  "Project Orgid", &self.project_info_orgid, Message::ProjectOrgIdUpdated).padding(10);
-        let current_component_input = TextInput::new(&mut self.project_component_input,  "Component Name", &self.current_component_name, Message::CurrentComponentNameUpdated).padding(10);
+        let current_component_input = TextInput::new(&mut self.project_component_input,  "Component Name to edit/create", &self.current_component_name, Message::CurrentComponentNameUpdated).padding(10);
+        let component_name_input = TextInput::new(&mut self.component_editor_name_input,  "Component Name", &self.component_name, Message::ComponentNameUpdate).padding(10);
         Column::new()
             .padding(20)
             .align_items(Align::Center)
@@ -165,7 +206,7 @@ impl Sandbox for Editor {
             .push(
                 Text::new("\n").height(iced::Length::Units(10))
             )
-
+            // Buttons for loading and stuff
             .push(
                 Button::new(&mut self.load_project_button, Text::new("Load Project Info")).on_press(Message::LoadProjectInfo)
             )
@@ -178,6 +219,7 @@ impl Sandbox for Editor {
             .push(
                 Text::new("\n").height(iced::Length::Units(15))
             )
+            // Basic project info
             .push(
                 project_name_input
             )
@@ -193,6 +235,7 @@ impl Sandbox for Editor {
             .push(
                 Text::new("\n").height(iced::Length::Units(10))
             )
+            // Component editor buttons
             .push(
                 Button::new(&mut self.new_component_button, Text::new("Add component").size(20)).padding(6).on_press(Message::AddComponent).style(style::Button::FilterSelected)
             )
@@ -200,7 +243,14 @@ impl Sandbox for Editor {
                 Text::new("\n").height(iced::Length::Units(3))
             )
             .push(
-                Button::new(&mut self.edit_component_button, Text::new("Edit component").size(20)).padding(6).on_press(Message::AddComponent).style(style::Button::FilterSelected)
+                Button::new(&mut self.edit_component_button, Text::new("Edit component").size(20)).padding(6).on_press(Message::EditComponent).style(style::Button::FilterSelected)
+            )
+            .push(
+                Text::new("\n").height(iced::Length::Units(15))
+            )
+            // Component Editor
+            .push(
+                component_name_input
             )
             .into()
     }
@@ -213,8 +263,10 @@ pub enum Message {
     ProjectOrgIdUpdated(String),
     LoadProjectInfo,
     AddComponent,
-    CurrentComponentNameUpdated(String)
-
+    CurrentComponentNameUpdated(String),
+    EditComponent,
+    // Component Editor Events
+    ComponentNameUpdate(String)
 }
 pub fn open_editor(){
     Editor::run(Settings::default()).unwrap();
