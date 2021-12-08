@@ -14,6 +14,8 @@ pub struct Editor {
     project_org_id_input: iced::text_input::State,
     project_component_input: iced::text_input::State,
     component_editor_name_input: iced::text_input::State,
+    component_editor_desc_input: iced::text_input::State,
+    component_editor_install_dir_input: iced::text_input::State,
     edit_component_button: button::State,
     new_component_button: button::State,
     build_project_button: button::State,
@@ -159,6 +161,8 @@ impl Sandbox for Editor {
                 println!("Loading component info for: {}", name);
                 let info = self.components.get(name).expect("Failed to load component info: invalid name");
                 self.component_name = info["$name"].to_string().replace("\"", "");
+                self.component_desc = info["$desc"].to_string().replace("\"", "");
+                self.component_install_dir = info["$installDir"].to_string().replace("\"", "");
                 self.internal_component_name = name.to_string();
                 self.loaded_component = true;
                 println!("{:?}", info);
@@ -173,10 +177,32 @@ impl Sandbox for Editor {
                     info["$name"] = serde_json::Value::String(value);
                     println!("Updating in-memory component...");
                     self.components.remove(&self.internal_component_name.to_string());
-                    // I know this could be simpler, but rust wouldnt let me.
-                    // But you can get it to work better please help!
                     self.components.insert(self.internal_component_name.to_string(), crate::utils::get_component_json_from_info(info));
                 }   
+            },
+            Message::ComponentDescUpdated(value) => {
+                if self.loaded_component {
+                    println!("Updating component desc to {}", value);
+                    self.component_desc = value.to_string();
+                    // Get json for current component
+                    let mut info_one = self.components.get(&self.internal_component_name).expect("Failed to load component info: invalid name").to_owned();
+                    let info = info_one.as_object_mut().unwrap();
+                    info["$desc"] = serde_json::Value::String(value);
+                    println!("Updating in-memory component...");
+                    self.components.remove(&self.internal_component_name.to_string());
+                    self.components.insert(self.internal_component_name.to_string(), crate::utils::get_component_json_from_info(info));
+                }   
+            },
+            Message::ComponentInstallDirUpdated(value) => {
+                println!("Updating component install dir to {}", value);
+                    self.component_install_dir = value.to_string();
+                    // Get json for current component
+                    let mut info_one = self.components.get(&self.internal_component_name).expect("Failed to load component info: invalid name").to_owned();
+                    let info = info_one.as_object_mut().unwrap();
+                    info["$installDir"] = serde_json::Value::String(value);
+                    println!("Updating in-memory component...");
+                    self.components.remove(&self.internal_component_name.to_string());
+                    self.components.insert(self.internal_component_name.to_string(), crate::utils::get_component_json_from_info(info));
             }
         }
     }
@@ -187,6 +213,8 @@ impl Sandbox for Editor {
         let project_org_id_input = TextInput::new(&mut self.project_org_id_input,  "Project Orgid", &self.project_info_orgid, Message::ProjectOrgIdUpdated).padding(10);
         let current_component_input = TextInput::new(&mut self.project_component_input,  "Component Name to edit/create", &self.current_component_name, Message::CurrentComponentNameUpdated).padding(10);
         let component_name_input = TextInput::new(&mut self.component_editor_name_input,  "Component Name", &self.component_name, Message::ComponentNameUpdate).padding(10);
+        let component_desc_input = TextInput::new(&mut self.component_editor_desc_input,  "Component Description", &self.component_desc, Message::ComponentDescUpdated).padding(10);
+        let component_install_dir_input = TextInput::new(&mut self.component_editor_install_dir_input,  "Component Install Folder", &self.component_install_dir, Message::ComponentInstallDirUpdated).padding(10);
         Column::new()
             .padding(20)
             .align_items(Align::Center)
@@ -213,6 +241,9 @@ impl Sandbox for Editor {
             // Basic project info
             .push(
                 project_name_input
+            )
+            .push(
+                Text::new("\n").height(iced::Length::Units(10))
             )
             .push(
                 project_org_id_input
@@ -243,6 +274,18 @@ impl Sandbox for Editor {
             .push(
                 component_name_input
             )
+            .push(
+                Text::new("\n").height(iced::Length::Units(10))
+            )
+            .push(
+                component_desc_input
+            )
+            .push(
+                Text::new("\n").height(iced::Length::Units(10))
+            )
+            .push(
+                component_install_dir_input
+            )
             .into()
     }
 }
@@ -257,7 +300,9 @@ pub enum Message {
     CurrentComponentNameUpdated(String),
     EditComponent,
     // Component Editor Events
-    ComponentNameUpdate(String)
+    ComponentNameUpdate(String),
+    ComponentDescUpdated(String),
+    ComponentInstallDirUpdated(String)
 }
 pub fn open_editor(){
     Editor::run(Settings::default()).unwrap();
