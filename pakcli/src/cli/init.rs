@@ -19,6 +19,7 @@ pub fn init(){
         "component_default": {
             "$name": "default",
             "$pkgName": "defaultPkg",
+            "$desc": "default pakage",
             "$selected": true,
             "$selectable": false,
             "$visible": true,

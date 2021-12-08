@@ -2,6 +2,7 @@ mod welcome;
 mod project;
 mod pak_cli;
 mod editor;
+mod utils;
 use std::env;
 use std::path::Path;
 

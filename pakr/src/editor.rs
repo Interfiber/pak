@@ -141,7 +141,7 @@ impl Sandbox for Editor {
                 self.current_component_name = "".to_string();
                 self.components.insert(name.to_string(), json!({
                     "$name": "Placeholder name",
-                    "$installerDir": "/opt/placeholder",
+                    "$installDir": "/opt/placeholder",
                     "$desc": "Description of component",
                     "$payloadName": "nameOfPayload",
                     "$pkgName": "smallPackageName",
@@ -175,16 +175,7 @@ impl Sandbox for Editor {
                     self.components.remove(&self.internal_component_name.to_string());
                     // I know this could be simpler, but rust wouldnt let me.
                     // But you can get it to work better please help!
-                    self.components.insert(self.internal_component_name.to_string(), json!({
-                        "$name": info["$name"].to_string().replace("\"", ""),
-                        "$installerDir": "/opt/placeholder",
-                        "$desc": "Description of component",
-                        "$payloadName": "nameOfPayload",
-                        "$pkgName": "smallPackageName",
-                        "$selectable": false,
-                        "$selected": true,
-                        "$visible": true
-                    }));
+                    self.components.insert(self.internal_component_name.to_string(), crate::utils::get_component_json_from_info(info));
                 }   
             }
         }
