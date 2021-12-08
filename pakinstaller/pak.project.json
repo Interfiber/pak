@@ -1,0 +1,34 @@
+{
+  "component_default": {
+    "$desc": "The pak command line tool",
+    "$installDir": "/opt/pak",
+    "$name": "pak cli",
+    "$payloadName": "default",
+    "$pkgName": "pakCli",
+    "$selectable": false,
+    "$selected": true,
+    "$visible": true,
+    "$scriptsFolder": "pak_scripts"
+  },
+  "component_pakr": {
+    "$desc": "GUI interface for the pak command line tool",
+    "$installDir": "/opt/pakr",
+    "$name": "pakr",
+    "$payloadName": "pakr",
+    "$pkgName": "pakr",
+    "$selectable": true,
+    "$selected": false,
+    "$visible": true,
+    "$scriptsFolder": "pakr_scripts"
+  },
+  "components": [
+    "default",
+    "pakr"
+  ],
+  "appearance": {
+    "$license": "LICENSE"
+  },
+  "orgName": "dev.interfiber",
+  "projectName": "pak",
+  "version": "1.1.0"
+}

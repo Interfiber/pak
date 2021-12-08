@@ -2,10 +2,10 @@
 
 # Add path files
 if [ -f "/etc/paths.d/pak" ]; then
-    echo "Status: Complete" >> /tmp/pak.postinstall.log
+    echo "Status: Complete" >> /tmp/pakr.postinstall.log
 else
     touch /etc/paths.d/pak
     echo "/opt/pak/bin" >> /etc/paths.d/pak
-    echo "Status: Complete" >> /tmp/pak.postinstall.log
+    echo "Status: Complete" >> /tmp/pakr.postinstall.log
 fi
 chmod +x /opt/pak/bin/*

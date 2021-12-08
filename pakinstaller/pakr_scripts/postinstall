@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Add path files
+if [ -f "/etc/paths.d/pakr" ]; then
+    echo "Status: Complete" >> /tmp/pakr.postinstall.log
+else
+    touch /etc/paths.d/pakr
+    echo "/opt/pakr/bin" >> /etc/paths.d/pakr
+    echo "Status: Complete" >> /tmp/pakr.postinstall.log
+fi
+chmod +x /opt/pakr/bin/*
