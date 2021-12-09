@@ -2,6 +2,11 @@
 name = "pakr"
 description = "GUI frontend for pak"
 version = "0.1.0"
+homepage = "https://www.interfiber.dev/pak"
+readme = "README.md"
+repository = "https://github.com/Interfiber/pak/tree/main/pakr"
+documentation = "https://www.interfiber.dev/pak"
+license = "MIT"
 edition = "2021"
 
 [dependencies]

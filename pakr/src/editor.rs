@@ -4,6 +4,7 @@ use iced::button;
 use iced::{Button, Column, Text, Sandbox, Settings, Element, Align};
 use hashbrown::HashMap;
 use iced::text_input::TextInput;
+use std::path::Path;
 use serde_json::json;
 use serde_json::Value;
 
@@ -84,6 +85,11 @@ impl Sandbox for Editor {
                     let comp_raw_json = comp_data.to_string();
                     println!("Raw json: {}", comp_raw_json);
                     config_obj.insert(format!("component_{}", comp_name), serde_json::from_str(&comp_raw_json).expect("Failed to parse component info"));
+                    println!("Checking for payload...");
+                    let payload_exists = Path::new(&format!("payloads/{}", comp_data["payloadName"].to_string().replace("\"", ""))).exists();
+                    if !payload_exists {
+                        std::fs::create_dir_all(&format!("payloads/{}", comp_data["payloadName"].to_string().replace("\"", ""))).expect("Failed to create dir due to a error");
+                    }
                 }
                 match std::fs::write(&format!("{}/pak.project.json", project_dir.to_string()), serde_json::to_string_pretty(&config_obj).unwrap()){
                     Ok(_) => print!(""),
