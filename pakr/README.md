@@ -1,5 +1,5 @@
 # Pakr
-GUI frotend for pak
+GUI frontend for pak
 
 ![](demo.png)
 
