@@ -189,6 +189,7 @@ impl Sandbox for Editor {
                     println!("Updating in-memory component...");
                     self.components.remove(&self.internal_component_name.to_string());
                     self.components.insert(self.internal_component_name.to_string(), crate::utils::get_component_json_from_info(info));
+                    self.has_unsaved_changes = true;
                 }   
             },
             Message::ComponentDescUpdated(value) => {
@@ -202,6 +203,7 @@ impl Sandbox for Editor {
                     println!("Updating in-memory component...");
                     self.components.remove(&self.internal_component_name.to_string());
                     self.components.insert(self.internal_component_name.to_string(), crate::utils::get_component_json_from_info(info));
+                    self.has_unsaved_changes = true;
                 }   
             },
             Message::ComponentInstallDirUpdated(value) => {
@@ -215,6 +217,7 @@ impl Sandbox for Editor {
                     println!("Updating in-memory component...");
                     self.components.remove(&self.internal_component_name.to_string());
                     self.components.insert(self.internal_component_name.to_string(), crate::utils::get_component_json_from_info(info));
+                    self.has_unsaved_changes = true;
                 } 
             },
             Message::ComponentPayloadNameUpdated(value) => {
@@ -228,6 +231,7 @@ impl Sandbox for Editor {
                     println!("Updating in-memory component...");
                     self.components.remove(&self.internal_component_name.to_string());
                     self.components.insert(self.internal_component_name.to_string(), crate::utils::get_component_json_from_info(info));
+                    self.has_unsaved_changes = true;
                 } 
             },
             Message::ComponentSelectedUpdated(toggle) => {
@@ -240,6 +244,8 @@ impl Sandbox for Editor {
                     println!("Updating in-memory component...");
                     self.components.remove(&self.internal_component_name.to_string());
                     self.components.insert(self.internal_component_name.to_string(), crate::utils::get_component_json_from_info(info));
+                    println!("{}", crate::utils::get_component_json_from_info(info));
+                    self.has_unsaved_changes = true;
                 }
             }
         }

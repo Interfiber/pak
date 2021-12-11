@@ -9,7 +9,7 @@ pub fn get_component_json_from_info(info: &mut serde_json::Map<String, serde_jso
         "$payloadName": info["$payloadName"].to_string().replace("\"", ""),
         "$pkgName": info["$pkgName"].to_string().replace("\"", ""),
         "$selectable": false,
-        "$selected": true,
+        "$selected": info["$selected"].as_bool(),
         "$visible": true
     })
 }
