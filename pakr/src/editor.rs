@@ -17,6 +17,7 @@ pub struct Editor {
     component_editor_name_input: iced::text_input::State,
     component_editor_desc_input: iced::text_input::State,
     component_editor_install_dir_input: iced::text_input::State,
+    component_editor_payload_name_input: iced::text_input::State,
     edit_component_button: button::State,
     new_component_button: button::State,
     build_project_button: button::State,
@@ -30,6 +31,8 @@ pub struct Editor {
     component_name: String,
     component_desc: String,
     component_install_dir: String,
+    component_payload_name: String,
+    component_selected: bool,
     // the internal component name is the same as the component  name but its only updated using code, not the user
     internal_component_name: String,
     has_unsaved_changes: bool,
@@ -170,7 +173,9 @@ impl Sandbox for Editor {
                 self.component_desc = info["$desc"].to_string().replace("\"", "");
                 self.component_install_dir = info["$installDir"].to_string().replace("\"", "");
                 self.internal_component_name = name.to_string();
+                self.component_selected = info["$selected"].as_bool().expect("Failed to convert Value to bool");
                 self.loaded_component = true;
+                self.component_payload_name = info["$payloadName"].to_string().replace("\"", "");
                 println!("{:?}", info);
             },
             Message::ComponentNameUpdate(value) => {
@@ -200,7 +205,8 @@ impl Sandbox for Editor {
                 }   
             },
             Message::ComponentInstallDirUpdated(value) => {
-                println!("Updating component install dir to {}", value);
+                if self.loaded_component {
+                    println!("Updating component install dir to {}", value);
                     self.component_install_dir = value.to_string();
                     // Get json for current component
                     let mut info_one = self.components.get(&self.internal_component_name).expect("Failed to load component info: invalid name").to_owned();
@@ -209,6 +215,32 @@ impl Sandbox for Editor {
                     println!("Updating in-memory component...");
                     self.components.remove(&self.internal_component_name.to_string());
                     self.components.insert(self.internal_component_name.to_string(), crate::utils::get_component_json_from_info(info));
+                } 
+            },
+            Message::ComponentPayloadNameUpdated(value) => {
+                if self.loaded_component {
+                    println!("Updating component payload name to {}", value);
+                    self.component_payload_name = value.to_string();
+                    // Get json for current component
+                    let mut info_one = self.components.get(&self.internal_component_name).expect("Failed to load component info: invalid name").to_owned();
+                    let info = info_one.as_object_mut().unwrap();
+                    info["$payloadName"] = serde_json::Value::String(value);
+                    println!("Updating in-memory component...");
+                    self.components.remove(&self.internal_component_name.to_string());
+                    self.components.insert(self.internal_component_name.to_string(), crate::utils::get_component_json_from_info(info));
+                } 
+            },
+            Message::ComponentSelectedUpdated(toggle) => {
+                if self.loaded_component {
+                    println!("Updating selected status to: {}", toggle);
+                    self.component_selected = toggle;
+                    let mut info_one = self.components.get(&self.internal_component_name).expect("Failed to load component info: invalid name").to_owned();
+                    let info = info_one.as_object_mut().unwrap();
+                    info["$selected"] = serde_json::Value::Bool(toggle);
+                    println!("Updating in-memory component...");
+                    self.components.remove(&self.internal_component_name.to_string());
+                    self.components.insert(self.internal_component_name.to_string(), crate::utils::get_component_json_from_info(info));
+                }
             }
         }
     }
@@ -221,6 +253,7 @@ impl Sandbox for Editor {
         let component_name_input = TextInput::new(&mut self.component_editor_name_input,  "Component Name", &self.component_name, Message::ComponentNameUpdate).padding(10);
         let component_desc_input = TextInput::new(&mut self.component_editor_desc_input,  "Component Description", &self.component_desc, Message::ComponentDescUpdated).padding(10);
         let component_install_dir_input = TextInput::new(&mut self.component_editor_install_dir_input,  "Component Install Folder", &self.component_install_dir, Message::ComponentInstallDirUpdated).padding(10);
+        let component_payload_name_input = TextInput::new(&mut self.component_editor_payload_name_input,  "Component Payload Name", &self.component_payload_name, Message::ComponentPayloadNameUpdated).padding(10);
         Column::new()
             .padding(20)
             .align_items(Align::Center)
@@ -292,6 +325,18 @@ impl Sandbox for Editor {
             .push(
                 component_install_dir_input
             )
+            .push(
+                Text::new("\n").height(iced::Length::Units(10))
+            )
+            .push(
+                component_payload_name_input
+            )
+            .push(
+                Text::new("\n").height(iced::Length::Units(10))
+            )
+            .push(
+                iced::Checkbox::new(self.component_selected, "Selected", Message::ComponentSelectedUpdated)
+            )
             .into()
     }
 }
@@ -308,7 +353,9 @@ pub enum Message {
     // Component Editor Events
     ComponentNameUpdate(String),
     ComponentDescUpdated(String),
-    ComponentInstallDirUpdated(String)
+    ComponentInstallDirUpdated(String),
+    ComponentPayloadNameUpdated(String),
+    ComponentSelectedUpdated(bool)
 }
 pub fn open_editor(){
     Editor::run(Settings::default()).unwrap();
