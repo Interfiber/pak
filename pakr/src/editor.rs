@@ -39,6 +39,7 @@ pub struct Editor {
     internal_component_name: String,
     has_unsaved_changes: bool,
     loaded_component: bool,
+    component_visible: bool,
     component_selectable: bool
 }
 
@@ -171,6 +172,8 @@ impl Sandbox for Editor {
                 self.component_install_dir = info["$installDir"].to_string().replace("\"", "");
                 self.internal_component_name = name.to_string();
                 self.component_selected = info["$selected"].as_bool().expect("Failed to convert Value to bool");
+                self.component_selectable = info["$selectable"].as_bool().expect("Failed to convert Value to bool");
+                self.component_visible = info["$visible"].as_bool().expect("Failed to convert Value to bool");
                 self.loaded_component = true;
                 self.component_payload_name = info["$payloadName"].to_string().replace("\"", "");
                 self.component_script_folder = info["$scriptsFolder"].to_string().replace("\"", "");
@@ -271,6 +274,20 @@ impl Sandbox for Editor {
                     let mut info_one = self.components.get(&self.internal_component_name).expect("Failed to load component info: invalid name").to_owned();
                     let info = info_one.as_object_mut().unwrap();
                     info["$selectable"] = serde_json::Value::Bool(toggle);
+                    println!("Updating in-memory component...");
+                    self.components.remove(&self.internal_component_name.to_string());
+                    self.components.insert(self.internal_component_name.to_string(), crate::utils::get_component_json_from_info(info));
+                    println!("{}", crate::utils::get_component_json_from_info(info));
+                    self.has_unsaved_changes = true;
+                }
+            },
+            Message::ComponentVisibleUpdated(toggle) => {
+                if self.loaded_component {
+                    println!("Updating visible status to: {}", toggle);
+                    self.component_visible = toggle;
+                    let mut info_one = self.components.get(&self.internal_component_name).expect("Failed to load component info: invalid name").to_owned();
+                    let info = info_one.as_object_mut().unwrap();
+                    info["$visible"] = serde_json::Value::Bool(toggle);
                     println!("Updating in-memory component...");
                     self.components.remove(&self.internal_component_name.to_string());
                     self.components.insert(self.internal_component_name.to_string(), crate::utils::get_component_json_from_info(info));
@@ -384,6 +401,12 @@ impl Sandbox for Editor {
             .push(
                 iced::Checkbox::new(self.component_selectable, "Selectable", Message::ComponentSelectableUpdated)
             )
+            .push(
+                Text::new("\n").height(iced::Length::Units(15))
+            )
+            .push(
+                iced::Checkbox::new(self.component_visible, "Visible", Message::ComponentVisibleUpdated)
+            )
             .into()
     }
 }
@@ -404,7 +427,8 @@ pub enum Message {
     ComponentPayloadNameUpdated(String),
     ComponentScriptFolderUpdated(String),
     ComponentSelectedUpdated(bool),
-    ComponentSelectableUpdated(bool)
+    ComponentSelectableUpdated(bool),
+    ComponentVisibleUpdated(bool)
 }
 pub fn open_editor(){
     Editor::run(Settings::default()).unwrap();
