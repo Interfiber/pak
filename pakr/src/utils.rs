@@ -4,6 +4,7 @@ use serde_json::json;
 pub fn get_component_json_from_info(info: &mut serde_json::Map<String, serde_json::Value>) -> serde_json::Value {
     let script_folder_value = info.get("$scriptsFolder").unwrap_or(&serde_json::Value::Null);
     let mut result = String::from("");
+    println!("Preventing compiler warning: value of result is {}", result);
     if script_folder_value == &serde_json::Value::Null {
         result = "null".to_string();
     } else {
