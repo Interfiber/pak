@@ -18,6 +18,7 @@ pub struct Editor {
     component_editor_desc_input: iced::text_input::State,
     component_editor_install_dir_input: iced::text_input::State,
     component_editor_payload_name_input: iced::text_input::State,
+    component_editor_script_folder_input: iced::text_input::State,
     edit_component_button: button::State,
     new_component_button: button::State,
     build_project_button: button::State,
@@ -32,6 +33,7 @@ pub struct Editor {
     component_desc: String,
     component_install_dir: String,
     component_payload_name: String,
+    component_script_folder: String,
     component_selected: bool,
     // the internal component name is the same as the component  name but its only updated using code, not the user
     internal_component_name: String,
@@ -61,14 +63,7 @@ impl Sandbox for Editor {
                 println!("Building project...");
                 let project_dir = project::get_current_project();
                 println!("Switching to working directory: {}", project_dir);
-                match std::env::set_current_dir(project_dir.to_string()){
-                    Ok(_) => print!(""),
-                    Err(err) => {
-                        println!("Failed to change current working directory!");
-                        println!("Error Log: {}", err);
-                        std::process::exit(1);
-                    }
-                }
+                std::env::set_current_dir(project_dir.to_string()).expect("Failed to change current working directory!");
                 println!("Saving config to disk...");
                 // read the config off disk
                 let components_array = &self.components_array;
@@ -104,6 +99,7 @@ impl Sandbox for Editor {
                 }
                 self.has_unsaved_changes = false;
                 println!("Executing build command");
+                subprocess::Exec::shell("rm -rvf .build_cache").join().expect("Failed to remove build cache");
                 pak_cli::execute_pak_cmd("build");
            },
             Message::ProjectNameUpdated(name) => {
@@ -176,6 +172,7 @@ impl Sandbox for Editor {
                 self.component_selected = info["$selected"].as_bool().expect("Failed to convert Value to bool");
                 self.loaded_component = true;
                 self.component_payload_name = info["$payloadName"].to_string().replace("\"", "");
+                self.component_script_folder = info["$scriptsFolder"].to_string().replace("\"", "");
                 println!("{:?}", info);
             },
             Message::ComponentNameUpdate(value) => {
@@ -247,6 +244,24 @@ impl Sandbox for Editor {
                     println!("{}", crate::utils::get_component_json_from_info(info));
                     self.has_unsaved_changes = true;
                 }
+            },
+            Message::ComponentScriptFolderUpdated(value) => {
+                if self.loaded_component {
+                    println!("Updating selected status to: {}", &value.to_string());
+                    self.component_script_folder = value.to_string();
+                    let mut info_one = self.components.get(&self.internal_component_name).expect("Failed to load component info: invalid name").to_owned();
+                    let info = info_one.as_object_mut().unwrap();
+                    if info.get("$scriptsFolder").unwrap_or(&serde_json::Value::Null) == &serde_json::Value::Null {
+                        info.insert("$scriptsFolder".to_string(), serde_json::Value::String(value.to_string()));
+                    } else {
+                        info["$scriptsFolder"] = serde_json::Value::String(value.to_string());
+                    }
+                    println!("Updating in-memory component...");
+                    self.components.remove(&self.internal_component_name.to_string());
+                    self.components.insert(self.internal_component_name.to_string(), crate::utils::get_component_json_from_info(info));
+                    println!("{}", crate::utils::get_component_json_from_info(info));
+                    self.has_unsaved_changes = true;
+                }
             }
         }
     }
@@ -260,6 +275,7 @@ impl Sandbox for Editor {
         let component_desc_input = TextInput::new(&mut self.component_editor_desc_input,  "Component Description", &self.component_desc, Message::ComponentDescUpdated).padding(10);
         let component_install_dir_input = TextInput::new(&mut self.component_editor_install_dir_input,  "Component Install Folder", &self.component_install_dir, Message::ComponentInstallDirUpdated).padding(10);
         let component_payload_name_input = TextInput::new(&mut self.component_editor_payload_name_input,  "Component Payload Name", &self.component_payload_name, Message::ComponentPayloadNameUpdated).padding(10);
+        let component_script_folder_input = TextInput::new(&mut self.component_editor_script_folder_input,  "Component Script Folder", &self.component_script_folder, Message::ComponentScriptFolderUpdated).padding(10);
         Column::new()
             .padding(20)
             .align_items(Align::Center)
@@ -340,6 +356,10 @@ impl Sandbox for Editor {
             .push(
                 Text::new("\n").height(iced::Length::Units(10))
             )
+            .push(component_script_folder_input)
+            .push(
+                Text::new("\n").height(iced::Length::Units(15))
+            )
             .push(
                 iced::Checkbox::new(self.component_selected, "Selected", Message::ComponentSelectedUpdated)
             )
@@ -361,6 +381,7 @@ pub enum Message {
     ComponentDescUpdated(String),
     ComponentInstallDirUpdated(String),
     ComponentPayloadNameUpdated(String),
+    ComponentScriptFolderUpdated(String),
     ComponentSelectedUpdated(bool)
 }
 pub fn open_editor(){
