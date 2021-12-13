@@ -38,7 +38,8 @@ pub struct Editor {
     // the internal component name is the same as the component  name but its only updated using code, not the user
     internal_component_name: String,
     has_unsaved_changes: bool,
-    loaded_component: bool
+    loaded_component: bool,
+    component_selectable: bool
 }
 
 
@@ -262,6 +263,20 @@ impl Sandbox for Editor {
                     println!("{}", crate::utils::get_component_json_from_info(info));
                     self.has_unsaved_changes = true;
                 }
+            },
+            Message::ComponentSelectableUpdated(toggle) => {
+                if self.loaded_component {
+                    println!("Updating selectable status to: {}", toggle);
+                    self.component_selectable = toggle;
+                    let mut info_one = self.components.get(&self.internal_component_name).expect("Failed to load component info: invalid name").to_owned();
+                    let info = info_one.as_object_mut().unwrap();
+                    info["$selectable"] = serde_json::Value::Bool(toggle);
+                    println!("Updating in-memory component...");
+                    self.components.remove(&self.internal_component_name.to_string());
+                    self.components.insert(self.internal_component_name.to_string(), crate::utils::get_component_json_from_info(info));
+                    println!("{}", crate::utils::get_component_json_from_info(info));
+                    self.has_unsaved_changes = true;
+                }
             }
         }
     }
@@ -363,6 +378,12 @@ impl Sandbox for Editor {
             .push(
                 iced::Checkbox::new(self.component_selected, "Selected", Message::ComponentSelectedUpdated)
             )
+            .push(
+                Text::new("\n").height(iced::Length::Units(15))
+            )
+            .push(
+                iced::Checkbox::new(self.component_selectable, "Selectable", Message::ComponentSelectableUpdated)
+            )
             .into()
     }
 }
@@ -382,7 +403,8 @@ pub enum Message {
     ComponentInstallDirUpdated(String),
     ComponentPayloadNameUpdated(String),
     ComponentScriptFolderUpdated(String),
-    ComponentSelectedUpdated(bool)
+    ComponentSelectedUpdated(bool),
+    ComponentSelectableUpdated(bool)
 }
 pub fn open_editor(){
     Editor::run(Settings::default()).unwrap();
