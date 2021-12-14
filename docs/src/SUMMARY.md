@@ -8,4 +8,7 @@
 
 - [Installer Scripts](./scripts.md)
 
-- [Pakr Install](./pakr_install.md)
+
+- [Pakr](./pakr.md)
+    - [Pakr Install](./pakr_install.md)
+    - [Pakr Functions](./pakr_functions.md)

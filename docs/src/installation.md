@@ -15,3 +15,6 @@ If you use homebrew you can install pak using the following commands:
 brew tap Interfiber/homebrew-tap
 brew install --cask pak
 ```
+
+## Notice about codesign
+The installers are NOT codesigned, which means macOS will not open it. To open it RIGHT CLICK the file in finder and click open.

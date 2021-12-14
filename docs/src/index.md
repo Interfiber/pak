@@ -5,6 +5,8 @@ MacOS package installer builder
 <details>
 <summary>Download Links</summary>
 <br>
+<a href="https://github.com/Interfiber/pak/releases/download/v1.0.2/installer.pkg">Download v1.0.2</a>
+
 <a href="https://github.com/Interfiber/pak/releases/download/v1.0.1/installer.pkg">Download v1.0.1</a>
 
 <a href="https://github.com/Interfiber/pak/releases/download/v0.2.1/installer.pkg">Download v0.2.1</a>
