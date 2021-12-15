@@ -5,7 +5,7 @@ description = "pak is a tool for bundling MacOS software into installer packages
 homepage = "https://www.interfiber.dev/pak"
 readme = "../README.md"
 repository = "https://github.com/Interfiber/pak"
-documentation = "https://www.interfiber.dev/pak"
+documentation = "https://www.interfiber.dev/projects/pak"
 license = "MIT"
 edition = "2021"
 
